@@ -21,10 +21,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenCLUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Kernels\VectorAdd.cl">
       <Filter>Source Files\Kernels</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpenCLUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
