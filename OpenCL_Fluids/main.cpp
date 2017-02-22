@@ -56,6 +56,9 @@ int main() {
 		std::cout << A[i] << " + " << B[i] << " = " << C[i] << "\n";
 	}
 
-	delete A, B, C;
+	delete A;
+	delete B;
+	delete C;
+	delete program;
 	return 0;
 }
