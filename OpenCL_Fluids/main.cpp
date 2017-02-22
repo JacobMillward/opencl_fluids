@@ -6,8 +6,6 @@
 
 int main() {
 
-	std::vector<cl::Device> allDevices;
-	std::vector<cl::Platform> allPlatforms;
 	//Length of vectors
 	int n = 10000;
 
