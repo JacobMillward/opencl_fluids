@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
-#include <cmath>
-#include <vector>
 #include "OpenCLUtil.h"
+#include <SDL.h>
+#undef main
 
 int main() {
 	float poolSize = 100;
@@ -40,11 +40,44 @@ int main() {
 	kernel.setArg(5, c2);
 	kernel.setArg(6, dt);
 
-	//Run the kernel on the specified ND range
+	//Set up NDRanges
 	cl::NDRange global(gridWidth * gridWidth);
 	cl::NDRange local(1);
-	clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
 
+	/* Set up SDL */
+	SDL_Window* window = NULL;
+	SDL_Surface* screenSurface = NULL;
+
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		std::cerr << "SDL_Init error: " << SDL_GetError() << std::endl;
+		return 1;
+	}
+	window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 600, 400, SDL_WINDOW_SHOWN); if (window == NULL) { printf("Window could not be created! SDL_Error: %s\n", SDL_GetError()); }
+	//Get window surface
+	screenSurface = SDL_GetWindowSurface( window );
+	//Fill the surface white
+	SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
+	//Update the surface
+	SDL_UpdateWindowSurface( window );
+	
+	//Main Loop
+	bool quit = false;
+	SDL_Event e;
+	while (!quit) {
+		/* Handle SDL Events */
+		while (SDL_PollEvent(&e) > 0) {
+			switch (e.type) {
+				case SDL_QUIT:
+					quit = true;
+					break;
+			}
+		}
+		/* Run our simulation step */
+		clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
+	}
+	//Destroy window
+	SDL_DestroyWindow( window );
+	SDL_Quit();
 	delete program;
 	return 0;
 }
