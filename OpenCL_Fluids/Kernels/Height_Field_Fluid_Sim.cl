@@ -2,8 +2,8 @@ __kernel void ColumnSimStep(__global const float *u,
 	__global float *u2,
 	__global float *v,
 	__constant int gridWidth,
-	__constant float columnWidthSquared,
-	__constant float cSquared
+	__constant float h,
+	__constant float c2
 	__constant float dt) {
 
 	int i = get_global_id(0);
@@ -16,7 +16,7 @@ __kernel void ColumnSimStep(__global const float *u,
 	float right = (x + 1 < 0 ? 0 : u[i + 1]);
 
 	float f[gridWidth*gridWidth];
-	f[i] = cSquared *(up + down + left + right – 4 * u[i]) / columnWidthSquared;
+	f[i] = c2 *(up + down + left + right – 4 * u[i]) / (h * h);
 
 	v[i] += f[i] * dt;
 
