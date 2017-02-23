@@ -13,7 +13,7 @@ OpenCLUtil::OpenCLUtil()
 		throw "No platforms found!";
 	}
 
-	for (int i = 0; i < allPlatforms.size(); ++i) {
+	for (size_t i = 0; i < allPlatforms.size(); ++i) {
 		//Identify the platform for posterity
 		std::cout << "Platform Name: " << allPlatforms[i].getInfo<CL_PLATFORM_NAME>() << "\n";
 		std::cout << "Platform Vendor: " << allPlatforms[i].getInfo<CL_PLATFORM_VENDOR>() << "\n\n";
