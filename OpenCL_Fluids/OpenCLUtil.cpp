@@ -44,7 +44,7 @@ OpenCLUtil::OpenCLUtil(HGLRC renderContext, HDC deviceContext)
 		CL_GL_CONTEXT_KHR,   (cl_context_properties)renderContext,
 		//HDC used to create the OpenGL context
 		// I have a feeling this is just coincidence atm, lets fix this later
-		CL_WGL_HDC_KHR,     (cl_context_properties)deviceContext,
+		CL_WGL_HDC_KHR,     (cl_context_properties)(this->device_)(),
 		0
 	};
 	/* Create OpenCL Context */
