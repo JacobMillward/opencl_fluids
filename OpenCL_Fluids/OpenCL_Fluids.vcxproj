@@ -77,11 +77,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%AMDAPPSDKROOT%\include;%CUDA_PATH%\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GLEW\include;..\SOIL;%AMDAPPSDKROOT%\include;%CUDA_PATH%\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%CUDA_PATH%\lib\Win32;%AMDAPPSDKROOT%\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\GLEW\lib;..\SOIL\$(Configuration);.\$(Configuration);$(LibraryPath);%CUDA_PATH%\lib\Win32;%AMDAPPSDKROOT%\lib\x86</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -134,13 +134,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OpenCLUtil.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderObject.cpp" />
+    <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Kernels\Height_Field_Fluid_Sim.cl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="OpenCLUtil.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderObject.h" />
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
