@@ -137,21 +137,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OpenCLUtil.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="RenderObject.cpp" />
-    <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Kernels\Height_Field_Fluid_Sim.cl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="OpenCLUtil.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RenderObject.h" />
-    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

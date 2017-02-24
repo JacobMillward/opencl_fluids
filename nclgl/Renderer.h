@@ -1,5 +1,5 @@
 #pragma once
-#include "../nclgl/OGLRenderer.h"
+#include "OGLRenderer.h"
 
 #include "RenderObject.h"
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../nclgl/Matrix4.h"
+#include "Matrix4.h"
 #include "Mesh.h"
 #include "Shader.h"
-#include "../nclgl/OGLRenderer.h"
+#include "OGLRenderer.h"
 
 class RenderObject	{
 public:

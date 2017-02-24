@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "Renderer.h"
+#include "../nclgl/Renderer.h"
 #include "OpenCLUtil.h"
 
 int main() {
@@ -47,8 +47,6 @@ int main() {
 	/* Set up NDRanges */
 	cl::NDRange global(gridWidth * gridWidth);
 	cl::NDRange local(1);
-
-	
 
 	while (w.UpdateWindow()) {
 		clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);

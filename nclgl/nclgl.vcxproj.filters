@@ -19,6 +19,10 @@
     <ClCompile Include="Quaternion.cpp">
       <Filter>Maths</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderObject.cpp" />
+    <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
@@ -52,6 +56,10 @@
     <ClInclude Include="InputDevice.h">
       <Filter>Input</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderObject.h" />
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Maths">

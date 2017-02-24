@@ -18,7 +18,7 @@ _-_-_-_-_-_-_-""  ""
 
 #pragma once
 
-#include "../nclgl/OGLRenderer.h"
+#include "OGLRenderer.h"
 #include <vector>
 #include <string>
 #include <fstream>
