@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-OpenCLUtil::OpenCLUtil()
+OpenCLUtil::OpenCLUtil(HGLRC renderContext, HDC deviceContext)
 {
 	/* Search all platforms for a GPU device */
 
@@ -14,15 +14,16 @@ OpenCLUtil::OpenCLUtil()
 	}
 
 	for (size_t i = 0; i < allPlatforms.size(); ++i) {
-		//Identify the platform for posterity
-		std::cout << "Platform Name: " << allPlatforms[i].getInfo<CL_PLATFORM_NAME>() << "\n";
-		std::cout << "Platform Vendor: " << allPlatforms[i].getInfo<CL_PLATFORM_VENDOR>() << "\n\n";
 		//Get all GPU devices for this platform
 		allPlatforms[i].getDevices(CL_DEVICE_TYPE_GPU, &allDevices);
 		if (allDevices.size() == 0) {
 			continue;
 		}
 		else {
+			//Identify the platform for posterity
+			std::cout << "Platform Name: " << allPlatforms[i].getInfo<CL_PLATFORM_NAME>() << "\n";
+			std::cout << "Platform Vendor: " << allPlatforms[i].getInfo<CL_PLATFORM_VENDOR>() << "\n";
+			this->platform_ = allPlatforms[i];
 			break;
 		}
 	}
@@ -34,8 +35,20 @@ OpenCLUtil::OpenCLUtil()
 	/* Set device */
 	this->device_ = allDevices[0];
 
+	// Magic fuckery going on here.
+	cl_context_properties props[] =
+	{
+		//OpenCL platform
+		CL_CONTEXT_PLATFORM, (cl_context_properties)(this->platform_)(),
+		//OpenGL context
+		CL_GL_CONTEXT_KHR,   (cl_context_properties)renderContext,
+		//HDC used to create the OpenGL context
+		// I have a feeling this is just coincidence atm, lets fix this later
+		CL_WGL_HDC_KHR,     (cl_context_properties)deviceContext,
+		0
+	};
 	/* Create OpenCL Context */
-	this->context_ = cl::Context({ this->device_ });
+	this->context_ = cl::Context(CL_DEVICE_TYPE_GPU, props);
 
 	/* Create command queue */
 	this->queue_ = cl::CommandQueue(this->context_, this->device_);

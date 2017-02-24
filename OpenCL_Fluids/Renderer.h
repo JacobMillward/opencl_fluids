@@ -22,6 +22,8 @@ public:
 		renderObjects.push_back(&r);
 	}
 	
+	HDC& getDeviceContext() { return deviceContext; }
+	HGLRC& getRenderContext() { return renderContext; }
 	enum ShaderTypes { TYPE_SHRINK, TYPE_FADE, TYPE_BLEND, TYPE_CUBE };
 	ShaderTypes currentShader = TYPE_SHRINK;
 	void	resetTime() { time = 0; }

@@ -15,8 +15,11 @@ int main() {
 	/* Lets hardcode the timestep for now until we integrate NCLGL */
 	cl_float dt = 0.01f;
 
+	Window w = Window(800, 600);
+	Renderer r(w);
+
 	/* Set up OpenCL */
-	OpenCLUtil clUtil = OpenCLUtil();
+	OpenCLUtil clUtil = OpenCLUtil(r.getRenderContext(), r.getDeviceContext());
 
 	clUtil.printDeviceInfo();
 
@@ -41,14 +44,15 @@ int main() {
 	kernel.setArg(5, c2);
 	kernel.setArg(6, dt);
 
-	//Run the kernel on the specified ND range
+	/* Set up NDRanges */
 	cl::NDRange global(gridWidth * gridWidth);
 	cl::NDRange local(1);
-	clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
 
-	Window w = Window(800, 600);
-	Renderer r(w);
-	while (w.UpdateWindow()) {}
+	
+
+	while (w.UpdateWindow()) {
+		clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
+	}
 
 	delete program;
 	return 0;

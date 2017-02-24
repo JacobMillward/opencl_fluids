@@ -2,16 +2,18 @@
 #define CL_USE_DEPRECATED_OPENCL_2_0_APIS
 #include <CL\cl.hpp>
 #include <string>
+#include <Windows.h>
 
 class OpenCLUtil
 {
 private:
+	cl::Platform platform_;
 	cl::Device device_;
 	cl::Context context_;
 	cl::CommandQueue queue_;
 
 public:
-	OpenCLUtil();
+	OpenCLUtil(HGLRC renderContext, HDC deviceContext);
 	~OpenCLUtil();
 
 	cl::Device& getDevice() {
