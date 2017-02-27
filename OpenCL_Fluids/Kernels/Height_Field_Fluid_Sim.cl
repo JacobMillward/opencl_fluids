@@ -1,3 +1,5 @@
+#pragma OPENCL EXTENSION cl_khr_gl_sharing : enable
+
 __kernel void ColumnSimStep(__global const float *u,
 	__global float *u2,
 	__global float *v,

@@ -1,6 +1,7 @@
 #include "OpenCLUtil.h"
 #include <iostream>
 #include <fstream>
+#include <Windows.h>
 
 OpenCLUtil::OpenCLUtil(HGLRC renderContext, HDC deviceContext)
 {
@@ -32,23 +33,23 @@ OpenCLUtil::OpenCLUtil(HGLRC renderContext, HDC deviceContext)
 		throw "No GPU Devices found.";
 	}
 
-	/* Set device */
-	this->device_ = allDevices[0];
-
 	// Magic fuckery going on here.
 	cl_context_properties props[] =
 	{
 		//OpenCL platform
 		CL_CONTEXT_PLATFORM, (cl_context_properties)(this->platform_)(),
 		//OpenGL context
-		CL_GL_CONTEXT_KHR,   (cl_context_properties)renderContext,
+		CL_GL_CONTEXT_KHR,   (cl_context_properties)wglGetCurrentContext(),
 		//HDC used to create the OpenGL context
-		// I have a feeling this is just coincidence atm, lets fix this later
-		CL_WGL_HDC_KHR,     (cl_context_properties)(this->device_)(),
+		CL_WGL_HDC_KHR,     (cl_context_properties)wglGetCurrentDC(),
 		0
 	};
+
 	/* Create OpenCL Context */
 	this->context_ = cl::Context(CL_DEVICE_TYPE_GPU, props);
+
+	/* Set device */
+	this->device_ = this->context_.getInfo<CL_CONTEXT_DEVICES>()[0];
 
 	/* Create command queue */
 	this->queue_ = cl::CommandQueue(this->context_, this->device_);
@@ -73,7 +74,7 @@ cl::Program * OpenCLUtil::createProgram(std::string filePath)
 	//Build the program for the device
 	if (program->build({ this->device_ }) != CL_SUCCESS) {
 		std::cout << "Error building: " << program->getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->device_) << "\n";
-		throw "Error building program.";
+		//throw "Error building program.";
 	}
 
 	return program;
