@@ -1,5 +1,5 @@
 #include "FluidSim.h"
-
+#include <iostream>
 
 FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize/gridWidth), c2_(c*c)
 {
@@ -14,9 +14,9 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	kernel = cl::Kernel(*program, "ColumnSimStep");
 
 	/* Create OpenCL buffers */
-	cl::Buffer u = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
-	cl::Buffer u2 = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
-	cl::Buffer v = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
+	u = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
+	u2 = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
+	v = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
 
 	// TODO: Initialise u with an interesting function
 
