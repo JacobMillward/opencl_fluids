@@ -30,9 +30,9 @@ int main() {
 	cl::Kernel kernel(*program, "ColumnSimStep");
 
 	/* Create OpenCL buffers */
-	cl::Buffer u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth * gridWidth * sizeof(cl_float));
-	cl::Buffer u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth * gridWidth * sizeof(cl_float));
-	cl::Buffer v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth * gridWidth * sizeof(cl_float));
+	cl::Buffer u = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
+	cl::Buffer u2 = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
+	cl::Buffer v = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
 
 	// TODO: Initialise u with an interesting function
 
@@ -50,7 +50,7 @@ int main() {
 	cl::NDRange local(1);
 
 	while (w.UpdateWindow()) {
-	//	clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
+		//clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
 	}
 
 	delete program;
