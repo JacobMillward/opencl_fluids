@@ -3,7 +3,7 @@
 #include <fstream>
 #include <Windows.h>
 
-OpenCLUtil::OpenCLUtil(HGLRC renderContext, HDC deviceContext)
+OpenCLUtil::OpenCLUtil()
 {
 	/* Search all platforms for a GPU device */
 
@@ -62,33 +62,32 @@ OpenCLUtil::~OpenCLUtil()
 cl::Program * OpenCLUtil::createProgram(std::string filePath)
 {
 	//Read source file
-	std::ifstream sourceFile("Kernels/VectorAdd.cl");
+	std::ifstream sourceFile(filePath);
 	std::string sourceCode(
 		std::istreambuf_iterator<char>(sourceFile),
 		(std::istreambuf_iterator<char>()));
 	cl::Program::Sources source(1, std::make_pair(sourceCode.c_str(), sourceCode.length()));
-
+	for (auto s : source) { std::printf("%s\n", s.first); }
 	//Create a program from the source in the context
 	cl::Program* program = new cl::Program(this->context_, source);
 
 	//Build the program for the device
 	if (program->build({ this->device_ }) != CL_SUCCESS) {
-		std::cout << "Error building: " << program->getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->device_) << "\n";
-		//throw "Error building program.";
+		std::cout << "Error building program.\n---Build Log---\n" << program->getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->device_) << "\n";
 	}
 
 	return program;
 }
 
-void OpenCLUtil::printDeviceInfo()
+void OpenCLUtil::printDeviceInfo(cl::Device device)
 {
 	/* Identify the device */
-	std::cout << "Device Name: " << this->device_.getInfo<CL_DEVICE_NAME>() << "\n";
-	std::cout << "Device Vendor: " << this->device_.getInfo<CL_DEVICE_VENDOR>() << "\n";
-	std::cout << "Device Max Compute Units: " << this->device_.getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>() << "\n";
-	std::cout << "Device Global Memory: " << this->device_.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>() << "\n";
-	std::cout << "Device Max Clock Frequency: " << this->device_.getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() << "\n";
-	std::cout << "Device Max Allocateable Memory: " << this->device_.getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>() << "\n";
-	std::cout << "Device Local Memory: " << this->device_.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() << "\n";
+	std::cout << "Device Name: " << device.getInfo<CL_DEVICE_NAME>() << "\n";
+	std::cout << "Device Vendor: " << device.getInfo<CL_DEVICE_VENDOR>() << "\n";
+	std::cout << "Device Max Compute Units: " << device.getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>() << "\n";
+	std::cout << "Device Global Memory: " << device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>() << "\n";
+	std::cout << "Device Max Clock Frequency: " << device.getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() << "\n";
+	std::cout << "Device Max Allocateable Memory: " << device.getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>() << "\n";
+	std::cout << "Device Local Memory: " << device.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() << "\n";
 }
 

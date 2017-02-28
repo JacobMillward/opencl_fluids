@@ -5,6 +5,7 @@
 #include "../nclgl/Renderer.h"
 #include "OpenCLUtil.h"
 
+
 int main() {
 	float poolSize = 100;
 
@@ -19,9 +20,9 @@ int main() {
 	Renderer r(w);
 
 	/* Set up OpenCL */
-	OpenCLUtil clUtil = OpenCLUtil(r.getRenderContext(), r.getDeviceContext());
+	OpenCLUtil clUtil = OpenCLUtil();
 
-	clUtil.printDeviceInfo();
+	clUtil.printDeviceInfo(clUtil.getDevice());
 
 	cl::Program* program = clUtil.createProgram("Kernels/Height_Field_Fluid_Sim.cl");
 
@@ -49,7 +50,7 @@ int main() {
 	cl::NDRange local(1);
 
 	while (w.UpdateWindow()) {
-		clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
+	//	clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
 	}
 
 	delete program;

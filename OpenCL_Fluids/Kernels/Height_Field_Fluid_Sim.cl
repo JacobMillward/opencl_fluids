@@ -17,10 +17,9 @@ __kernel void ColumnSimStep(__global const float *u,
 	float left = (x - 1 < 0 ? 0 : u[i - 1]);
 	float right = (x + 1 > gridWidth ? 0 : u[i + 1]);
 
-	float f[gridWidth*gridWidth];
-	f[i] = c2 *(up + down + left + right - 4 * u[i]) / (h * h);
+	float f = c2 *(up + down + left + right - 4 * u[i]) / (h * h);
 
-	v[i] += f[i] * dt;
+	v[i] += f * dt;
 
 	u2[i] = u[i] + v[i] * dt;
 }

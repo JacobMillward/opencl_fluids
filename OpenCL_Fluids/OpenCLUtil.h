@@ -13,7 +13,7 @@ private:
 	cl::CommandQueue queue_;
 
 public:
-	OpenCLUtil(HGLRC renderContext, HDC deviceContext);
+	OpenCLUtil();
 	~OpenCLUtil();
 
 	cl::Device& getDevice() {
@@ -26,6 +26,6 @@ public:
 		return queue_;
 	};
 	cl::Program* createProgram(std::string filePath);
-	void printDeviceInfo();
+	void printDeviceInfo(cl::Device device);
 };
 
