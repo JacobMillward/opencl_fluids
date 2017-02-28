@@ -24,14 +24,8 @@ public:
 	
 	HDC& getDeviceContext() { return deviceContext; }
 	HGLRC& getRenderContext() { return renderContext; }
-	enum ShaderTypes { TYPE_SHRINK, TYPE_FADE, TYPE_BLEND, TYPE_CUBE };
-	ShaderTypes currentShader = TYPE_SHRINK;
-	void	resetTime() { time = 0; }
 protected:
 	GLuint LoadTexture(string name);
 	vector<RenderObject*> renderObjects;
-	GLuint brickTex;
-	GLuint staticTex;
-	float time = 0;
 };
 
