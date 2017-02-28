@@ -3,10 +3,10 @@
 __kernel void ColumnSimStep(__global const float *u,
 	__global float *u2,
 	__global float *v,
-	__constant int gridWidth,
-	__constant float h,
-	__constant float c2
-	__constant float dt) {
+	const int gridWidth,
+	const float h,
+	const float c2,
+	const float dt) {
 
 	int i = get_global_id(0);
 	int x = i % gridWidth;
