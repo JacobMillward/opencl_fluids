@@ -26,6 +26,7 @@ public:
 		return queue_;
 	};
 	cl::Program* createProgram(std::string filePath);
+	cl::BufferGL* createSharedBuffer(GLuint* vbo, size_t size, cl_mem_flags flags);
 	void printDeviceInfo(cl::Device device);
 };
 

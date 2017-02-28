@@ -9,9 +9,13 @@ int main() {
 	Renderer r(w);
 
 	FluidSim fluid(50, 50, 1);
+	//r.AddRenderObject(fluid.getRenderObject());
 
 	while (w.UpdateWindow()) {
 		fluid.step(0.01f);
+		r.ClearBuffers();
+		r.RenderScene();
+		r.SwapBuffers();
 	}
 
 	return 0;

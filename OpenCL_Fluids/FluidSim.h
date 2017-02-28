@@ -14,8 +14,12 @@ private:
 	float h_;
 	float c2_; //TODO: Figure out what the hell this value is (?Wave propogation speed?)
 
-	cl::Buffer u;
-	cl::Buffer u2;
+	GLuint vbo_u;
+	GLuint vbo_u2;
+
+	cl::BufferGL* clBuff_u;
+	cl::BufferGL* clBuff_u2;
+	std::vector<cl::Memory>* gl_buffers;
 	cl::Buffer v;
 
 	OpenCLUtil clUtil;
@@ -23,5 +27,7 @@ private:
 	cl::Kernel kernel;
 	cl::NDRange global;
 	cl::NDRange local;
+
+	bool flipBuff;
 };
 

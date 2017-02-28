@@ -1,7 +1,7 @@
+#include <GL\glew.h>
 #include "OpenCLUtil.h"
 #include <iostream>
 #include <fstream>
-#include <Windows.h>
 
 OpenCLUtil::OpenCLUtil()
 {
@@ -77,6 +77,19 @@ cl::Program * OpenCLUtil::createProgram(std::string filePath)
 	}
 
 	return program;
+}
+
+cl::BufferGL* OpenCLUtil::createSharedBuffer(GLuint* vbo, size_t size, cl_mem_flags flags)
+{
+	//Create buffer object
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+
+	//Initialize buffer object
+	glBufferData(GL_ARRAY_BUFFER, size, 0, GL_DYNAMIC_DRAW);
+
+	//Create OpenCL buffer from GL VBO
+	return new cl::BufferGL(this->context_, flags, *vbo);
 }
 
 void OpenCLUtil::printDeviceInfo(cl::Device device)
