@@ -1,5 +1,4 @@
 #include "FluidSim.h"
-#include "OpenCLUtil.h"
 
 
 FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize/gridWidth), c2_(c*c)

@@ -1,5 +1,6 @@
 #pragma once
 #include <CL\cl_platform.h>
+#include "OpenClUtil.h"
 
 class FluidSim
 {
