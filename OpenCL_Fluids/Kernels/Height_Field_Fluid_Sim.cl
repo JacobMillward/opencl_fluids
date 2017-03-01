@@ -12,8 +12,9 @@ __kernel void ColumnSimStep(__global const float *u,
 	int x = i % gridWidth;
 	int y = i / gridWidth;
 
-	printf("%f\n", u[i]);
-	float up = ( y - 1 < 0 ? 0 : u[i - gridWidth]);
+	printf("CL Read Buffer Value (%i): %f\n", i, ++u2[i]);
+	
+	/*float up = ( y - 1 < 0 ? 0 : u[i - gridWidth]);
 	float down = (y + 1 > gridWidth ? 0 : u[i + gridWidth]);
 	float left = (x - 1 < 0 ? 0 : u[i - 1]);
 	float right = (x + 1 > gridWidth ? 0 : u[i + 1]);
@@ -22,5 +23,5 @@ __kernel void ColumnSimStep(__global const float *u,
 
 	v[i] += f * dt;
 
-	u2[i] = u[i] + v[i] * dt;
+	u2[i] = u[i] + v[i] * dt;*/
 }

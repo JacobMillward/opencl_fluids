@@ -17,8 +17,8 @@ private:
 	GLuint vbo_u;
 	GLuint vbo_u2;
 
-	cl::BufferGL* clBuff_u;
-	cl::BufferGL* clBuff_u2;
+	cl::Buffer clBuff_u;
+	cl::Buffer clBuff_u2;
 	std::vector<cl::Memory>* gl_buffers;
 	cl::Buffer v;
 
