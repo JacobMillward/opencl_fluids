@@ -8,15 +8,15 @@ int main() {
 	Window w = Window(800, 600);
 	Renderer r(w);
 
-	FluidSim fluid(50, 50, 1);
+	FluidSim fluid(4, 4, 1);
 	//r.AddRenderObject(fluid.getRenderObject());
 
-	while (w.UpdateWindow()) {
+	//while (w.UpdateWindow()) {
 		fluid.step(0.01f);
 		r.ClearBuffers();
 		r.RenderScene();
 		r.SwapBuffers();
-	}
+	//}
 
 	return 0;
 }

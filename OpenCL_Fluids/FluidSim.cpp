@@ -13,12 +13,14 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	/* Create kernel */
 	kernel = cl::Kernel(*program, "ColumnSimStep");
 
-	/* Create VBOs */
 	/* Create OpenCL buffers */
-	clBuff_u = clUtil.createSharedBuffer(&vbo_u, gridWidth_*gridWidth_*sizeof(float), CL_MEM_READ_WRITE);
-	clBuff_u2 = clUtil.createSharedBuffer(&vbo_u2, gridWidth_*gridWidth_*sizeof(float), CL_MEM_READ_WRITE);
-	v = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth * gridWidth * sizeof(cl_float));
-
+	clBuff_u = clUtil.createSharedBuffer(&vbo_u, gridWidth_*gridWidth_*sizeof(cl_float), CL_MEM_READ_WRITE);
+	clBuff_u2 = clUtil.createSharedBuffer(&vbo_u2, gridWidth_*gridWidth_*sizeof(cl_float), CL_MEM_READ_WRITE);
+	v = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth_ * gridWidth_ * sizeof(cl_float));
+	float* test = new float[gridWidth_ * gridWidth_];
+	test[0] = 1;
+	clUtil.getCommandQueue().enqueueWriteBuffer(v, true, 0, gridWidth_ * gridWidth_ * sizeof(float), test);
+	clFinish(clUtil.getCommandQueue()());
 	gl_buffers = new std::vector<cl::Memory>();
 	gl_buffers->push_back(*clBuff_u);
 	gl_buffers->push_back(*clBuff_u2);
