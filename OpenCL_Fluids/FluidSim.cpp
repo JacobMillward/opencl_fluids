@@ -32,7 +32,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	kernel.setArg(5, c2_);
 
 	/* Set up NDRanges */
-	global = cl::NDRange(gridWidth * gridWidth);
+	global = cl::NDRange(gridWidth_ * gridWidth_);
 	local = cl::NDRange(1);
 }
 
@@ -65,7 +65,10 @@ void FluidSim::step(float dt)
 	flipBuff = !flipBuff;
 	kernel.setArg(6, dt);
 	/* Run kernel */
-	clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
+	if (auto err = clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local) != CL_SUCCESS)
+	{
+		std::cout << "Error running kernel (" << err << ")\n";
+	}
 	/* Release OpenGL buffers */
 	clUtil.getCommandQueue().enqueueReleaseGLObjects(gl_buffers);
 	/* Wait for command queue to finish */
