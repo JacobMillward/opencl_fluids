@@ -13,7 +13,6 @@ int main() {
 
 	//while (w.UpdateWindow()) {
 		fluid.step(0.01f);
-		fluid.step(0.01f);
 		r.ClearBuffers();
 		r.RenderScene();
 		r.SwapBuffers();

@@ -87,8 +87,8 @@ cl::BufferGL* OpenCLUtil::createSharedBuffer(GLuint* vbo, size_t size, cl_mem_fl
 	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
 
 	//Initialize buffer object
-	float test[4] = {0, 1, 2, 3};
-	glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), &test, GL_DYNAMIC_DRAW);
+	//float test[4] = {0, 1, 2, 3};
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), NULL, GL_DYNAMIC_DRAW);
 	
 	//Create OpenCL buffer from GL VBO
 	cl_int err;
