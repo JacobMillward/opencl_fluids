@@ -81,15 +81,22 @@ cl::Program * OpenCLUtil::createProgram(std::string filePath)
 
 cl::BufferGL* OpenCLUtil::createSharedBuffer(GLuint* vbo, size_t size, cl_mem_flags flags)
 {
+
 	//Create buffer object
 	glGenBuffers(1, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
 
 	//Initialize buffer object
-	glBufferData(GL_ARRAY_BUFFER, size, 0, GL_DYNAMIC_DRAW);
-
+	float test[4] = {0, 1, 2, 3};
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), &test, GL_DYNAMIC_DRAW);
+	
 	//Create OpenCL buffer from GL VBO
-	return new cl::BufferGL(this->context_, flags, *vbo);
+	cl_int err;
+	auto b = new cl::BufferGL(this->context_, flags, *vbo, &err);
+	if (err != CL_SUCCESS) {
+		std::cout << "Error creating shared buffer(" << err << ")\n";
+	}
+	return b;
 }
 
 void OpenCLUtil::printDeviceInfo(cl::Device device)

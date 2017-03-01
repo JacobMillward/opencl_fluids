@@ -1,3 +1,4 @@
+#include "GL/glew.h"
 #include "FluidSim.h"
 #include <iostream>
 
@@ -14,13 +15,11 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	kernel = cl::Kernel(*program, "ColumnSimStep");
 
 	/* Create OpenCL buffers */
-	clBuff_u = clUtil.createSharedBuffer(&vbo_u, gridWidth_*gridWidth_*sizeof(cl_float), CL_MEM_READ_WRITE);
-	clBuff_u2 = clUtil.createSharedBuffer(&vbo_u2, gridWidth_*gridWidth_*sizeof(cl_float), CL_MEM_READ_WRITE);
-	v = cl::Buffer(clUtil.getContext(), CL_MEM_HOST_NO_ACCESS, gridWidth_ * gridWidth_ * sizeof(cl_float));
-	float* test = new float[gridWidth_ * gridWidth_];
-	test[0] = 1;
-	clUtil.getCommandQueue().enqueueWriteBuffer(v, true, 0, gridWidth_ * gridWidth_ * sizeof(float), test);
-	clFinish(clUtil.getCommandQueue()());
+	clBuff_u = clUtil.createSharedBuffer(&vbo_u, gridWidth_*gridWidth_, CL_MEM_WRITE_ONLY);
+	clBuff_u2 = clUtil.createSharedBuffer(&vbo_u2, gridWidth_*gridWidth_, CL_MEM_WRITE_ONLY);
+
+	v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
+
 	gl_buffers = new std::vector<cl::Memory>();
 	gl_buffers->push_back(*clBuff_u);
 	gl_buffers->push_back(*clBuff_u2);
@@ -45,29 +44,38 @@ FluidSim::~FluidSim()
 	delete gl_buffers;
 	delete clBuff_u;
 	delete clBuff_u2;
+
+	glDeleteBuffers(1, &vbo_u);
+	glDeleteBuffers(1, &vbo_u2);
 }
 
 void FluidSim::step(float dt)
 {
 	/* Acquire OpenGL buffers */
-	clUtil.getCommandQueue().enqueueAcquireGLObjects(gl_buffers);
-	/* Bind updated values */
-	if (flipBuff)
+	glFlush();
+	auto err = clUtil.getCommandQueue().enqueueAcquireGLObjects(gl_buffers);
+	if (err != CL_SUCCESS)
 	{
+		std::cout << "Error aquiring GL buffers (" << err << ")\n";
+	}
+	/* Bind updated values */
+	/*if (flipBuff)
+	{*/
 		kernel.setArg(0, *clBuff_u);
 		kernel.setArg(1, *clBuff_u2);
 
-	}
+	/*}
 	else
 	{
 		kernel.setArg(0, *clBuff_u2);
 		kernel.setArg(1, *clBuff_u);
 
 	}
-	flipBuff = !flipBuff;
+	flipBuff = !flipBuff;*/
 	kernel.setArg(6, dt);
 	/* Run kernel */
-	if (auto err = clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local) != CL_SUCCESS)
+	err = clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
+	if (err != CL_SUCCESS)
 	{
 		std::cout << "Error running kernel (" << err << ")\n";
 	}
@@ -75,4 +83,8 @@ void FluidSim::step(float dt)
 	clUtil.getCommandQueue().enqueueReleaseGLObjects(gl_buffers);
 	/* Wait for command queue to finish */
 	clFinish(clUtil.getCommandQueue()());
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_u2);
+	float* buf = ((float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY));
+	std::printf("GL Read Buffer Values: %f, %f, %f , %f\n", buf[0], buf[1], buf[2], buf[3]);
+	if (glUnmapBuffer(GL_ARRAY_BUFFER) != GL_TRUE) { std::cout << "We done fucked up.\n"; }
 }
