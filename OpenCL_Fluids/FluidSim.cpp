@@ -34,7 +34,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope) : poo
 
 	/* Create renderobject */
 	shader = new Shader("BasicVert.glsl", "basicFrag.glsl");
-	mesh = Mesh::GeneratePlane(poolSize_, gridWidth_);
+	mesh = new FluidMesh(poolSize_, gridWidth_);
 	renderObject = RenderObject(mesh, shader);
 
 	host_u = new cl_float[size];

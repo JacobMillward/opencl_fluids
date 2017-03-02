@@ -5,9 +5,10 @@
 FluidMesh::FluidMesh(float gridSize, int verticesPerSide) : gridSize(verticesPerSide*verticesPerSide), Mesh()
 {
 	/* Set up arrays */
-	numVertices = verticesPerSide;
+	numVertices = verticesPerSide*verticesPerSide;
 	numIndices = (verticesPerSide - 1)*(verticesPerSide - 1)*6;
 	vertices = new Vector3[numVertices];
+	colours = new Vector4[numVertices];
 	textureCoords = new Vector2[numVertices];
 	indices = new GLuint[numIndices];
 	/* Generate vertices */

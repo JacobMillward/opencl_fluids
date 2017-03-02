@@ -1,6 +1,7 @@
 #pragma once
 #include "OpenClUtil.h"
 #include "../nclgl/RenderObject.h"
+#include "FluidMesh.h"
 
 class FluidSim
 {
@@ -30,7 +31,7 @@ private:
 	cl_float* host_u;
 
 	Shader* shader;
-	Mesh* mesh;
+	FluidMesh* mesh;
 	RenderObject renderObject;
 
 	bool flipBuff = true;
