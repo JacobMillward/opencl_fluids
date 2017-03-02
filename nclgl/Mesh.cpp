@@ -218,7 +218,7 @@ void	Mesh::BufferData()	{
 	//Buffer vertex data
 	glGenBuffers(1, &bufferObject[VERTEX_BUFFER]);
 	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[VERTEX_BUFFER]);
-	glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), vertices, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
 	glEnableVertexAttribArray(VERTEX_BUFFER);
 
