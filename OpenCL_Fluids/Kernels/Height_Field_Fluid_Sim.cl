@@ -10,9 +10,9 @@ __kernel void ColumnSimStep(__global const float3 *u,
 	int x = i % gridWidth;
 	int y = i / gridWidth;
 	float3 up = ( y - 1 < 0 ? 0 : u[i - gridWidth]);
-	float3 down = (y + 1 > gridWidth ? 0 : u[i + gridWidth]);
+	float3 down = (y + 1 >= gridWidth ? 0 : u[i + gridWidth]);
 	float3 left = (x - 1 < 0 ? 0 : u[i - 1]);
-	float3 right = (x + 1 > gridWidth ? 0 : u[i + 1]);
+	float3 right = (x + 1 >= gridWidth ? 0 : u[i + 1]);
 
 	float f = c2 *(up.y + down.y + left.y + right.y - 4 * u[i].y) / (h * h);
 

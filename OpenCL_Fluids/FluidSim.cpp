@@ -43,7 +43,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 		host_u[i].y = mesh->getVertices()[i].y;
 		host_u[i].z = mesh->getVertices()[i].z;
 	}
-	host_u[0].y = 0.1;
+	host_u[20].y = 20;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float3), host_u);
 
 }
