@@ -153,7 +153,7 @@ OGLRenderer::OGLRenderer(Window &window)	{
 	}
 #endif
 
-	glClearColor(0.2f,0.2f,0.2f,1.0f);			//When we clear the screen, we want it to be dark grey
+	glClearColor(0.1f,0.1f,0.1f,1.0f);			//When we clear the screen, we want it to be dark grey
 
 	window.RegisterResizeCallback(BasicResizeFunc);//Tell our window about the new renderer! (Which will in turn resize the renderer window to fit...)		
 }

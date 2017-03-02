@@ -48,6 +48,8 @@ public:
 
 	//Generates a single triangle, with RGB colours
 	static Mesh*	GenerateTriangle();
+	//Generates an X by X plane of points
+	static Mesh*	GeneratePlane(float sideLength, int pointsPerSide);
 	static Mesh*	LoadMeshFile(const string &filename);
 
 	GLuint	type;	//Primitive type for this mesh (GL_TRIANGLES...etc)

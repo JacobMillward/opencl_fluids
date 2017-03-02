@@ -38,15 +38,19 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	/* Set up NDRanges */
 	global = cl::NDRange(gridWidth_ * gridWidth_);
 	local = cl::NDRange(1);
+
+	/* Create renderobject */
+	shader = new Shader("BasicVert.glsl", "basicFrag.glsl");
+	mesh = Mesh::GeneratePlane(poolSize_, gridWidth_);
+	renderObject = RenderObject(mesh, shader);
 }
 
 
 FluidSim::~FluidSim()
 {
 	delete program;
-	delete gl_buffers;
-	//delete clBuff_u;
-	//delete clBuff_u2;
+	delete shader;
+	delete mesh;
 
 	glDeleteBuffers(1, &vbo_u);
 	glDeleteBuffers(1, &vbo_u2);

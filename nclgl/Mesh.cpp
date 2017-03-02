@@ -102,6 +102,27 @@ Mesh* Mesh::GenerateTriangle()	{
 	return m;
 }
 
+Mesh * Mesh::GeneratePlane(float sideLength, int pointsPerSide)
+{
+	Mesh* m = new Mesh();
+	m->type = GL_POINTS;
+	m->numVertices = pointsPerSide * pointsPerSide;
+
+	float distanceBetweenPoints = sideLength / pointsPerSide;
+
+	m->vertices = new Vector3[m->numVertices];
+	m->colours = new Vector4[m->numVertices];
+	for (int y = 0; y < pointsPerSide; ++y) {
+		for (int x = 0; x < pointsPerSide; ++x) {
+			m->vertices[y * pointsPerSide + x] = Vector3(x*distanceBetweenPoints, 0.0f, y*distanceBetweenPoints);
+			m->colours[y * pointsPerSide + x] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+	}
+
+	m->BufferData();
+	return m;
+}
+
 Mesh*	Mesh::LoadMeshFile(const string &filename) {
 	ifstream f(filename);
 

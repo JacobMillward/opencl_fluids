@@ -1,5 +1,6 @@
 #pragma once
 #include "OpenClUtil.h"
+#include "../nclgl/RenderObject.h"
 
 class FluidSim
 {
@@ -8,6 +9,8 @@ public:
 	~FluidSim();
 
 	void step(float dt);
+	RenderObject getRenderObject() { return renderObject; };
+
 private:
 	float poolSize_;
 	int gridWidth_;
@@ -26,6 +29,10 @@ private:
 	cl::Kernel kernel;
 	cl::NDRange global;
 	cl::NDRange local;
+
+	Shader* shader;
+	Mesh* mesh;
+	RenderObject renderObject;
 
 	bool flipBuff;
 };
