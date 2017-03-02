@@ -114,7 +114,7 @@ Mesh * Mesh::GeneratePlane(float sideLength, int pointsPerSide)
 	m->colours = new Vector4[m->numVertices];
 	for (int y = 0; y < pointsPerSide; ++y) {
 		for (int x = 0; x < pointsPerSide; ++x) {
-			m->vertices[y * pointsPerSide + x] = Vector3(x*distanceBetweenPoints, 0.0f, y*distanceBetweenPoints);
+			m->vertices[y * pointsPerSide + x] = Vector3(x*distanceBetweenPoints, 1.0f, y*distanceBetweenPoints);
 			m->colours[y * pointsPerSide + x] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
@@ -218,8 +218,8 @@ void	Mesh::BufferData()	{
 	//Buffer vertex data
 	glGenBuffers(1, &bufferObject[VERTEX_BUFFER]);
 	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[VERTEX_BUFFER]);
-	glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
+	glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), vertices, GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(VERTEX_BUFFER);
 
 	////Buffer texture data

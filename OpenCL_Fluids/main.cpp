@@ -15,13 +15,13 @@ int main() {
 	Matrix4 view = Matrix4::BuildViewMatrix(Vector3(0, 5, -5), Vector3(0, 0, 0));
 	r.SetViewMatrix(view);
 
-	//while (w.UpdateWindow()) {
+	while (w.UpdateWindow()) {
 		//We need dt in seconds so times by 1000
 		fluid.step(w.GetTimer()->GetTimedMS()*1000);
 		r.ClearBuffers();
 		r.RenderScene();
 		r.SwapBuffers();
-	//}
+	}
 
 	return 0;
 }

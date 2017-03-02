@@ -16,9 +16,6 @@ private:
 	int gridWidth_;
 	float h_;
 	float c2_; //TODO: Figure out what the hell this value is (?Wave propogation speed?)
-
-	GLuint vbo_u;
-	GLuint vbo_u2;
 	
 	OpenCLUtil clUtil;
 	cl::Program* program;
@@ -29,7 +26,7 @@ private:
 	cl::Buffer clBuff_u;
 	cl::Buffer clBuff_u2;
 	cl::Buffer v;
-	Vector3* host_u;
+	cl_float3* host_u;
 
 	Shader* shader;
 	Mesh* mesh;
