@@ -8,14 +8,14 @@ int main() {
 	Window w = Window(800, 600);
 	Renderer r(w);
 
-	FluidSim fluid(100, 50, 0.015, 10);
+	FluidSim fluid(200, 100, 0.004, 10);
 	r.AddRenderObject(fluid.getRenderObject());
 
 	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 1.33f, 95.0f));
 	Vector3 cameraPosition = Vector3(45, 25, -50);
 	Vector3 cameraLookAt = Vector3(44, 22, 2);
 	float cameraSpeed = 10.0f;
-	float timeScale = 10.0f;
+	int timeScale = 10;
 
 	while (w.UpdateWindow()) {
 		float dt = w.GetTimer()->GetTimedMS();
@@ -48,8 +48,15 @@ int main() {
 		}
 		r.SetViewMatrix(Matrix4::BuildViewMatrix(cameraPosition, cameraLookAt));
 
+		/* Timescale Controls */
+		if (Keyboard::KeyTriggered(KeyboardKeys::KEY_LEFT)) {
+			timeScale = max(1, timeScale /= 10);
+		}
+		if (Keyboard::KeyTriggered(KeyboardKeys::KEY_RIGHT)) {
+			timeScale *= 10;
+		}
 		if (Keyboard::KeyDown(KeyboardKeys::KEY_SPACE)) {
-			fluid.step(dt*(1/timeScale));
+			fluid.step(dt*(1.0f/timeScale));
 		}
 		else {
 			fluid.step(dt);
