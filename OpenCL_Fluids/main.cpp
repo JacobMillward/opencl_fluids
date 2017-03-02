@@ -23,12 +23,15 @@ int main() {
 		/* Timescale Controls */
 		if (Keyboard::KeyTriggered(KEY_LEFT)) {
 			timeScale = max(1, timeScale / 2);
+			cout << timeScale << "x\n";
 		}
 		if (Keyboard::KeyTriggered(KEY_RIGHT)) {
 			timeScale *= 2;
+			cout << timeScale << "x\n";
 		}
 		if (Keyboard::KeyTriggered(KEY_T)) {
 			timeWarpEnabled = !timeWarpEnabled;
+			cout << "Timewarp: " << (timeWarpEnabled ? "Enabled " : "Disabled ") << timeScale << "x\n";
 		}
 		/* Step the fluid forward */
 		if (timeWarpEnabled) {
