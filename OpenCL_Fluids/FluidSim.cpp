@@ -41,10 +41,9 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope) : poo
 	for (int i = 0; i < size; ++i) {
 		host_u[i] = mesh->getVertices()[i].y;
 	}
-
-	for (int i = 0; i < gridWidth_; ++i) {
-		host_u[i] = 5;
-	}
+	host_u[0] = 15;
+	host_u[1] = 8;
+	host_u[gridWidth_ + 1] = 8;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
 

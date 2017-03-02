@@ -4,9 +4,10 @@
 class FluidMesh : public Mesh
 {
 public:
-	FluidMesh();
+	FluidMesh(float gridSize, int verticesPerSide);
 	~FluidMesh();
 
-	void setVertices(GLuint vbo);
+private:
+	int gridSize;
 };
 
