@@ -19,21 +19,22 @@ private:
 
 	GLuint vbo_u;
 	GLuint vbo_u2;
-
-	cl::Buffer clBuff_u;
-	cl::Buffer clBuff_u2;
-	cl::Buffer v;
-
+	
 	OpenCLUtil clUtil;
 	cl::Program* program;
 	cl::Kernel kernel;
 	cl::NDRange global;
 	cl::NDRange local;
 
+	cl::Buffer clBuff_u;
+	cl::Buffer clBuff_u2;
+	cl::Buffer v;
+	Vector3* host_u;
+
 	Shader* shader;
 	Mesh* mesh;
 	RenderObject renderObject;
 
-	bool flipBuff;
+	bool flipBuff = true;
 };
 

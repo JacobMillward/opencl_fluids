@@ -52,6 +52,8 @@ public:
 	static Mesh*	GeneratePlane(float sideLength, int pointsPerSide);
 	static Mesh*	LoadMeshFile(const string &filename);
 
+	Vector3* getVertices() { return vertices; };
+	GLuint getVertexBuffer() { return bufferObject[VERTEX_BUFFER]; };
 	GLuint	type;	//Primitive type for this mesh (GL_TRIANGLES...etc)
 
 protected:

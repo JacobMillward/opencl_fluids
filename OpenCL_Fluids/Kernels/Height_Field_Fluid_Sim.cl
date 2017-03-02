@@ -9,7 +9,7 @@ __kernel void ColumnSimStep(__global const float3 *u,
 	int i = get_global_id(0);
 	int x = i % gridWidth;
 	int y = i / gridWidth;
-	
+	printf("%f\n", u[i].x);
 	float3 up = ( y - 1 < 0 ? 0 : u[i - gridWidth]);
 	float3 down = (y + 1 > gridWidth ? 0 : u[i + gridWidth]);
 	float3 left = (x - 1 < 0 ? 0 : u[i - 1]);

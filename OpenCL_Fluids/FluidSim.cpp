@@ -4,6 +4,7 @@
 
 FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize/gridWidth), c2_(c*c)
 {
+	int size = gridWidth_ * gridWidth_;
 	/* Set up OpenCL */
 	clUtil = OpenCLUtil();
 
@@ -14,18 +15,10 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	/* Create kernel */
 	kernel = cl::Kernel(*program, "ColumnSimStep");
 
-	glGenBuffers(1, &vbo_u);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_u);
-	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(cl_float3), NULL, GL_DYNAMIC_DRAW);
-
-	glGenBuffers(1, &vbo_u2);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_u2);
-	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(cl_float3), NULL, GL_DYNAMIC_DRAW);
-
 	/* Create OpenCL buffers */
-	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(cl_float3));
-	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(cl_float3));
-	v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
+	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(Vector3));
+	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(Vector3));
+	v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(float));
 
 	// TODO: Initialise u with an interesting function
 
@@ -36,13 +29,20 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	kernel.setArg(5, c2_);
 
 	/* Set up NDRanges */
-	global = cl::NDRange(gridWidth_ * gridWidth_);
+	global = cl::NDRange(size);
 	local = cl::NDRange(1);
 
 	/* Create renderobject */
 	shader = new Shader("BasicVert.glsl", "basicFrag.glsl");
 	mesh = Mesh::GeneratePlane(poolSize_, gridWidth_);
 	renderObject = RenderObject(mesh, shader);
+
+	host_u = new Vector3[size];
+	for (int i = 0; i < size; ++i) {
+		host_u[i] = mesh->getVertices()[i];
+	}
+	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float3), mesh->getVertices());
+
 }
 
 
@@ -51,6 +51,7 @@ FluidSim::~FluidSim()
 	delete program;
 	delete shader;
 	delete mesh;
+	delete host_u;
 
 	glDeleteBuffers(1, &vbo_u);
 	glDeleteBuffers(1, &vbo_u2);
@@ -85,21 +86,18 @@ void FluidSim::step(float dt)
 
 	// Explicit copy via host because cl/gl interop is being an ass
 	// Only copy the changed buffer
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->getVertexBuffer());
+	void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
 	if (flipBuff) {
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_u2);
-		void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u2, CL_FALSE, 0, gridWidth_*gridWidth_ * sizeof(float), ptr);
-		clFinish(clUtil.getCommandQueue()());
+		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u2, CL_FALSE, 0, gridWidth_*gridWidth_ * sizeof(cl_float3), ptr);
 	}
 	else {
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_u);
-		void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u, CL_FALSE, 0, gridWidth_*gridWidth_ * sizeof(float), ptr);
-		clFinish(clUtil.getCommandQueue()());
+		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u, CL_FALSE, 0, gridWidth_*gridWidth_ * sizeof(cl_float3), ptr);
 	}
+	clFinish(clUtil.getCommandQueue()());
 	if (err != CL_SUCCESS)
 	{
-		std::cout << "Error running kernel (" << err << ")\n";
+		std::cout << "Error reading buffer into vbo (" << err << ")\n";
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
