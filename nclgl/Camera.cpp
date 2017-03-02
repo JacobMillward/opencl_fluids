@@ -31,10 +31,10 @@ void  Camera::UpdateCamera(float  msec) {
 			Vector3(-0.2f, 0.0f, 0.0f) * msec;
 	}
 	if (Keyboard::KeyDown(KEY_SPACE)) {
-		position.y += 0.2 * msec;
+		position.y += 0.2f * msec;
 	}
 	if (Keyboard::KeyDown(KEY_SHIFT)) {
-		position.y -= 0.2 * msec;
+		position.y -= 0.2f * msec;
 	}
 }
 

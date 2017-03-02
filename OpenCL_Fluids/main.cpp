@@ -8,7 +8,7 @@ int main() {
 	Window w = Window(800, 600);
 	Renderer r(w);
 
-	FluidSim fluid(100, 100, 0.004, 15);
+	FluidSim fluid(100.0f, 100, 0.004f, 15.0f);
 	r.AddRenderObject(fluid.getRenderObject());
 
 	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 1.33f, 95.0f));
@@ -21,16 +21,16 @@ int main() {
 		float dt = w.GetTimer()->GetTimedMS();
 
 		/* Timescale Controls */
-		if (Keyboard::KeyTriggered(KeyboardKeys::KEY_LEFT)) {
+		if (Keyboard::KeyTriggered(KEY_LEFT)) {
 			timeScale = max(1, timeScale / 2);
 		}
-		if (Keyboard::KeyTriggered(KeyboardKeys::KEY_RIGHT)) {
+		if (Keyboard::KeyTriggered(KEY_RIGHT)) {
 			timeScale *= 2;
 		}
-		if (Keyboard::KeyTriggered(KeyboardKeys::KEY_T)) {
+		if (Keyboard::KeyTriggered(KEY_T)) {
 			timeWarpEnabled = !timeWarpEnabled;
 		}
-
+		/* Step the fluid forward */
 		if (timeWarpEnabled) {
 			fluid.step(dt*(1.0f/timeScale));
 		}
