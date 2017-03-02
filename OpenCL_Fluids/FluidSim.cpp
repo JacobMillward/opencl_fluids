@@ -16,8 +16,8 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope) : poo
 	kernel = cl::Kernel(*program, "ColumnSimStep");
 
 	/* Create OpenCL buffers */
-	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(cl_float3));
-	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(cl_float3));
+	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(cl_float));
+	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(cl_float));
 	v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, size * sizeof(float));
 
 	// TODO: Initialise u with an interesting function
@@ -37,17 +37,15 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope) : poo
 	mesh = Mesh::GeneratePlane(poolSize_, gridWidth_);
 	renderObject = RenderObject(mesh, shader);
 
-	host_u = new cl_float3[size];
+	host_u = new cl_float[size];
 	for (int i = 0; i < size; ++i) {
-		host_u[i].x = mesh->getVertices()[i].x;
-		host_u[i].y = mesh->getVertices()[i].y;
-		host_u[i].z = mesh->getVertices()[i].z;
+		host_u[i] = mesh->getVertices()[i].y;
 	}
 
 	for (int i = 0; i < gridWidth_; ++i) {
-		host_u[i].y = 5;
+		host_u[i] = 5;
 	}
-	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float3), host_u);
+	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
 
 
@@ -90,10 +88,10 @@ void FluidSim::step(float dt)
 	// Only copy the changed buffer
 	
 	if (flipBuff) {
-		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u2, CL_TRUE, 0, gridWidth_*gridWidth_ * sizeof(cl_float3), host_u);
+		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u2, CL_TRUE, 0, gridWidth_*gridWidth_ * sizeof(cl_float), host_u);
 	}
 	else {
-		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u, CL_TRUE, 0, gridWidth_*gridWidth_ * sizeof(cl_float3), host_u);
+		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u, CL_TRUE, 0, gridWidth_*gridWidth_ * sizeof(cl_float), host_u);
 	}
 	clFinish(clUtil.getCommandQueue()());
 	if (err != CL_SUCCESS)
@@ -103,7 +101,7 @@ void FluidSim::step(float dt)
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->getVertexBuffer());
 	Vector3* ptr = (Vector3*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	for (int i = 0; i < gridWidth_*gridWidth_; ++i) {
-		ptr[i].y = host_u[i].y;
+		ptr[i].y = host_u[i];
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 

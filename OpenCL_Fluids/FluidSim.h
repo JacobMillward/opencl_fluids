@@ -27,7 +27,7 @@ private:
 	cl::Buffer clBuff_u;
 	cl::Buffer clBuff_u2;
 	cl::Buffer v;
-	cl_float3* host_u;
+	cl_float* host_u;
 
 	Shader* shader;
 	Mesh* mesh;

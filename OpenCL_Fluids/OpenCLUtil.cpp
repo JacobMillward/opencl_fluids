@@ -67,7 +67,7 @@ cl::Program * OpenCLUtil::createProgram(std::string filePath)
 		std::istreambuf_iterator<char>(sourceFile),
 		(std::istreambuf_iterator<char>()));
 	cl::Program::Sources source(1, std::make_pair(sourceCode.c_str(), sourceCode.length()));
-	//for (auto s : source) { std::printf("%s\n", s.first); }
+	for (auto s : source) { std::printf("%s\n", s.first); }
 	//Create a program from the source in the context
 	cl::Program* program = new cl::Program(this->context_, source);
 

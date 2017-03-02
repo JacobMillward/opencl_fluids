@@ -8,7 +8,7 @@ int main() {
 	Window w = Window(800, 600);
 	Renderer r(w);
 
-	FluidSim fluid(200, 100, 0.004, 10);
+	FluidSim fluid(100, 100, 0.004, 10);
 	r.AddRenderObject(fluid.getRenderObject());
 
 	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 1.33f, 95.0f));
