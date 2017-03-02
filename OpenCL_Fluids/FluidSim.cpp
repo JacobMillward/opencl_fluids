@@ -23,13 +23,9 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
 	/* Create OpenCL buffers */
-	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));// clUtil.createSharedBuffer(&vbo_u, gridWidth_*gridWidth_, CL_MEM_READ_ONLY);
-	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));// clUtil.createSharedBuffer(&vbo_u2, gridWidth_*gridWidth_, CL_MEM_READ_WRITE);
+	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
+	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
 	v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
-
-	/*gl_buffers = new std::vector<cl::Memory>();
-	gl_buffers->push_back(*clBuff_u);
-	gl_buffers->push_back(*clBuff_u2);*/
 
 	// TODO: Initialise u with an interesting function
 
@@ -58,13 +54,6 @@ FluidSim::~FluidSim()
 
 void FluidSim::step(float dt)
 {
-	/* Acquire OpenGL buffers */
-	/*glFinish();
-	auto err = clUtil.getCommandQueue().enqueueAcquireGLObjects(gl_buffers);
-	if (err != CL_SUCCESS)
-	{
-		std::cout << "Error aquiring GL buffers (" << err << ")\n";
-	}*/
 	/* Bind updated values */
 	if (flipBuff)
 	{
@@ -87,8 +76,6 @@ void FluidSim::step(float dt)
 		std::cout << "Error running kernel (" << err << ")\n";
 	}
 
-	/* Release OpenGL buffers */
-	//clUtil.getCommandQueue().enqueueReleaseGLObjects(gl_buffers);
 	/* Wait for command queue to finish */
 	clFinish(clUtil.getCommandQueue()());
 
@@ -111,15 +98,6 @@ void FluidSim::step(float dt)
 		std::cout << "Error running kernel (" << err << ")\n";
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_u2);
-	float* buf = ((float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY));
-	std::printf("vbo_u2 GL Read Buffer Values: %f, %f, %f , %f\n", buf[0], buf[1], buf[2], buf[3]);
-	if (glUnmapBuffer(GL_ARRAY_BUFFER) != GL_TRUE) { std::cout << "We done fucked up.\n"; }
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_u);
-	buf = ((float*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY));
-	std::printf("vbo_u GL Read Buffer Values: %f, %f, %f , %f\n", buf[0], buf[1], buf[2], buf[3]);
-	if (glUnmapBuffer(GL_ARRAY_BUFFER) != GL_TRUE) { std::cout << "We done fucked up.\n"; }
 
 	flipBuff = !flipBuff;
 }

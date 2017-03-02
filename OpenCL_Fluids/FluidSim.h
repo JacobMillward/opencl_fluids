@@ -19,7 +19,6 @@ private:
 
 	cl::Buffer clBuff_u;
 	cl::Buffer clBuff_u2;
-	std::vector<cl::Memory>* gl_buffers;
 	cl::Buffer v;
 
 	OpenCLUtil clUtil;
