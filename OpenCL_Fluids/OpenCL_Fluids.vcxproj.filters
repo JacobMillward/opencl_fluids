@@ -27,6 +27,9 @@
     <ClCompile Include="FluidSim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FluidMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Kernels\Height_Field_Fluid_Sim.cl">
@@ -38,6 +41,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FluidSim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FluidMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

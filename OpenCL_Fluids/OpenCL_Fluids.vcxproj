@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FluidMesh.cpp" />
     <ClCompile Include="FluidSim.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OpenCLUtil.cpp" />
@@ -144,6 +145,7 @@
     <None Include="Kernels\Height_Field_Fluid_Sim.cl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FluidMesh.h" />
     <ClInclude Include="FluidSim.h" />
     <ClInclude Include="OpenCLUtil.h" />
   </ItemGroup>

@@ -16,15 +16,15 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c) : poolSize_(poolSize)
 
 	glGenBuffers(1, &vbo_u);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_u);
-	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(cl_float3), NULL, GL_DYNAMIC_DRAW);
 
 	glGenBuffers(1, &vbo_u2);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_u2);
-	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(cl_float3), NULL, GL_DYNAMIC_DRAW);
 
 	/* Create OpenCL buffers */
-	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
-	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
+	clBuff_u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(cl_float3));
+	clBuff_u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(cl_float3));
 	v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth_ * gridWidth_ * sizeof(float));
 
 	// TODO: Initialise u with an interesting function
