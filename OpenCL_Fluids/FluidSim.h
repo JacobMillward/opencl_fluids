@@ -5,7 +5,7 @@
 class FluidSim
 {
 public:
-	FluidSim(float poolSize, int gridWidth, float c);
+	FluidSim(float poolSize, int gridWidth, float c, float maxSlope);
 	~FluidSim();
 
 	void step(float dt);
@@ -15,10 +15,8 @@ private:
 	float poolSize_;
 	int gridWidth_;
 	float h_;
-	float c2_; //TODO: Figure out what the hell this value is (?Wave propogation speed?)
-
-	GLuint vbo_u;
-	GLuint vbo_u2;
+	float c2_;
+	float maxSlope_;
 	
 	OpenCLUtil clUtil;
 	cl::Program* program;
@@ -29,7 +27,7 @@ private:
 	cl::Buffer clBuff_u;
 	cl::Buffer clBuff_u2;
 	cl::Buffer v;
-	Vector3* host_u;
+	cl_float3* host_u;
 
 	Shader* shader;
 	Mesh* mesh;

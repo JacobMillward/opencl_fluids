@@ -4,20 +4,26 @@ __kernel void ColumnSimStep(__global const float3 *u,
 	const int gridWidth,
 	const float h,
 	const float c2,
+	const float maxSlope,
 	const float dt) {
 
 	int i = get_global_id(0);
 	int x = i % gridWidth;
 	int y = i / gridWidth;
-	printf("%f\n", u[i].x);
-	float3 up = ( y - 1 < 0 ? 0 : u[i - gridWidth]);
-	float3 down = (y + 1 > gridWidth ? 0 : u[i + gridWidth]);
-	float3 left = (x - 1 < 0 ? 0 : u[i - 1]);
-	float3 right = (x + 1 > gridWidth ? 0 : u[i + 1]);
 
-	float f = c2 *(up.y + down.y + left.y + right.y - 4 * u[i].y) / (h * h);
+	float up = ( y - 1 < 0 ? 0 : u[i - gridWidth].y);
+	float down = (y + 1 >= gridWidth ? 0 : u[i + gridWidth].y);
+	float left = (x - 1 < 0 ? 0 : u[i - 1].y);
+	float right = (x + 1 >= gridWidth ? 0 : u[i + 1].y);
+
+	float f = c2 *(up + down + left + right - 4 * u[i].y) / (h * h);
 
 	v[i] += f * dt;
 
 	u2[i].y = u[i].y + v[i] * dt;
+
+	float offset = ((up + down + left + right) / 4) - u[i].y;
+	float maxOffset = maxSlope * h;
+	if (offset > maxOffset) u2[i].y += offset - maxOffset;
+	if (offset < -maxOffset) u2[i].y += offset + maxOffset;
 }
