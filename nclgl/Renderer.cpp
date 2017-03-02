@@ -1,13 +1,14 @@
 #include "Renderer.h"
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
-
+	camera = new Camera(0.0f, 180.0f, Vector3(45, 25, -50));
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Renderer::~Renderer(void)	{
+	delete camera;
 }
 
 void	Renderer::RenderScene() {
@@ -32,9 +33,11 @@ void	Renderer::Render(const RenderObject &o) {
 }
 
 void	Renderer::UpdateScene(float msec) {
-	for(vector<RenderObject*>::iterator i = renderObjects.begin(); i != renderObjects.end(); ++i ) {
+	/*for(vector<RenderObject*>::iterator i = renderObjects.begin(); i != renderObjects.end(); ++i ) {
 		(*i)->Update(msec);
-	}
+	}*/
+	camera->UpdateCamera(msec);
+	viewMatrix = camera->BuildViewMatrix();
 }
 
 GLuint Renderer::LoadTexture(string name)

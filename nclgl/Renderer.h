@@ -1,8 +1,7 @@
 #pragma once
 #include "OGLRenderer.h"
-
 #include "RenderObject.h"
-
+#include "Camera.h"
 #include <vector>
 
 using std::vector;
@@ -27,5 +26,6 @@ public:
 protected:
 	GLuint LoadTexture(string name);
 	vector<RenderObject*> renderObjects;
+	Camera* camera;
 };
 
