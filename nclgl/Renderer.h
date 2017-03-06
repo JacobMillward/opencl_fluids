@@ -8,7 +8,7 @@ using std::vector;
 
 class Renderer : public OGLRenderer	{
 public:
-	Renderer(Window &parent);
+	Renderer(Window &parent, float fluidSize);
 	~Renderer(void);
 
 	virtual void	RenderScene();
@@ -27,5 +27,6 @@ protected:
 	GLuint LoadTexture(string name);
 	vector<RenderObject*> renderObjects;
 	Camera* camera;
+	Light* light;
 };
 

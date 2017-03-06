@@ -184,6 +184,18 @@ void OGLRenderer::Resize(int x, int y)	{
 	glViewport(0,0,width,height);
 }
 
+void OGLRenderer::SetShaderLight(const GLuint &shaderProgram, const Light & l)
+{
+	glUniform3fv(glGetUniformLocation(shaderProgram,
+		"lightPos"), 1, (float *)&l.GetPosition());
+
+	glUniform4fv(glGetUniformLocation(shaderProgram,
+		"lightColour"), 1, (float *)&l.GetColour());
+
+	glUniform1f(glGetUniformLocation(shaderProgram,
+		"lightRadius"), l.GetRadius());
+}
+
 /*
 Swaps the buffers, ready for the next frame's rendering. Should be called
 every frame, at the end of RenderScene(), or whereever appropriate for

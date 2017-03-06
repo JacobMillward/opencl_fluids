@@ -59,6 +59,8 @@ public:
 protected:
 	//Buffers all VBO data into graphics memory. Required before drawing!
 	void	BufferData();
+	//Generates normals for the vertexes
+	void	GenerateNormals();
 
 	//VAO for this mesh
 	GLuint	arrayObject;

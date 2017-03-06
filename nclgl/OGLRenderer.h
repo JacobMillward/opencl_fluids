@@ -30,6 +30,7 @@ _-_-_-_-_-_-_-""  ""
 #include "Quaternion.h"
 #include "Matrix4.h"
 #include "Window.h"
+#include "Light.h"
 
 using std::vector;
 
@@ -67,7 +68,7 @@ public:
 	
 protected:
 	virtual void	Resize(int x, int y);
-
+	void			SetShaderLight(const GLuint &shaderProgram, const Light &l);
 	void			UpdateShaderMatrices(GLuint program);
 
 	Matrix4 projMatrix;		//Projection matrix

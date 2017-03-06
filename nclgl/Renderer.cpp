@@ -1,7 +1,11 @@
 #include "Renderer.h"
 
-Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
+Renderer::Renderer(Window &parent, float fluidSize) : OGLRenderer(parent)	{
 	camera = new Camera(0.0f, 180.0f, Vector3(45, 25, -50));
+	//Create our light
+	light = new  Light(Vector3(fluidSize, 20.0f, fluidSize/2.0f),
+		Vector4(1, 1, 1, 1),
+		fluidSize * 2.0f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -9,6 +13,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 
 Renderer::~Renderer(void)	{
 	delete camera;
+	delete light;
 }
 
 void	Renderer::RenderScene() {
@@ -24,6 +29,7 @@ void	Renderer::Render(const RenderObject &o) {
 		GLuint program = o.GetShader()->GetShaderProgram();	
 		glUseProgram(program);
 		UpdateShaderMatrices(program);
+		SetShaderLight(program, *light);
 		o.Draw();
 	}
 

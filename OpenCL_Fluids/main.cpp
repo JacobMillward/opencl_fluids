@@ -2,13 +2,14 @@
 #include "../nclgl/Renderer.h"
 #include "FluidSim.h"
 
+float fluidSize = 100.0f;
 
 int main() {
 
 	Window w = Window(800, 600);
-	Renderer r(w);
+	Renderer r(w, fluidSize);
 
-	FluidSim fluid(100.0f, 100, 0.004f, 15.0f);
+	FluidSim fluid(fluidSize, 200, 0.004f, 15.0f);
 	r.AddRenderObject(fluid.getRenderObject());
 
 	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 0.66f, 95.0f));
