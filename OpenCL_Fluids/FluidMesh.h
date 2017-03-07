@@ -4,7 +4,7 @@
 class FluidMesh : public Mesh
 {
 public:
-	FluidMesh(float gridSize, int verticesPerSide);
+	FluidMesh(float gridSize, int verticesPerSide, int textureWidth);
 	~FluidMesh();
 
 private:

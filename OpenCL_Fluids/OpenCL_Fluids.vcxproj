@@ -108,13 +108,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%AMDAPPSDKROOT%\include;%CUDA_PATH%\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GLEW\include;..\SOIL;%AMDAPPSDKROOT%\include;%CUDA_PATH%\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%CUDA_PATH%\lib\Win32;%AMDAPPSDKROOT%\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenCL.lib;nclgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\GLEW\lib;..\SOIL\$(Configuration);..\$(Configuration);$(LibraryPath);%CUDA_PATH%\lib\Win32;%AMDAPPSDKROOT%\lib\x86</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

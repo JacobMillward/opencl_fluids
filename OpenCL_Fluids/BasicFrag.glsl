@@ -1,5 +1,5 @@
 # version 330 core
-uniform sampler2D baseTex;
+uniform sampler2D diffuseTex;
 uniform vec3 cameraPos;
 uniform vec4 lightColour;
 uniform vec3 lightPos;
@@ -13,7 +13,7 @@ in Vertex {
 } IN;
 
 void main (void) {
-	vec4 diffuse = IN.colour;//texture(diffuseTex, IN.texCoord);
+	vec4 diffuse = texture(diffuseTex, IN.texCoord);
     vec3 incident = normalize(lightPos - IN.worldPos);
     float lambert = max(0.0, dot(incident, IN.normal));
 

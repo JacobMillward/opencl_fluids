@@ -3,7 +3,7 @@
 Renderer::Renderer(Window &parent, float fluidSize) : OGLRenderer(parent)	{
 	camera = new Camera(0.0f, 180.0f, Vector3(45, 25, -50));
 	//Create our light
-	light = new  Light(Vector3(fluidSize, 20.0f, fluidSize/2.0f),
+	light = new  Light(Vector3(fluidSize/2.0f, 20.0f, fluidSize/2.0f),
 		Vector4(1, 1, 1, 1),
 		fluidSize * 2.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -30,6 +30,11 @@ void	Renderer::Render(const RenderObject &o) {
 		glUseProgram(program);
 		UpdateShaderMatrices(program);
 		SetShaderLight(program, *light);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, o.GetTexture());
+		glUniform1i(glGetUniformLocation(program, "diffuseTex"), 0);
+
 		o.Draw();
 	}
 

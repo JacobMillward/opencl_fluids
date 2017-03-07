@@ -6,7 +6,7 @@
 class FluidSim
 {
 public:
-	FluidSim(float poolSize, int gridWidth, float c, float maxSlope);
+	FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::string texture = "poolwatr.png");
 	~FluidSim();
 
 	void step(float dt);
@@ -32,6 +32,7 @@ private:
 
 	Shader* shader;
 	FluidMesh* mesh;
+	GLuint texture;
 	RenderObject renderObject;
 
 	bool flipBuff = true;

@@ -2,7 +2,7 @@
 #include "FluidSim.h"
 #include <iostream>
 
-FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize/gridWidth), c2_(c*c), maxSlope_(maxSlope)
+FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::string texturePath) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize / gridWidth), c2_(c*c), maxSlope_(maxSlope)
 {
 	int size = gridWidth_ * gridWidth_;
 	/* Set up OpenCL */
@@ -34,16 +34,23 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope) : poo
 
 	/* Create renderobject */
 	shader = new Shader("BasicVert.glsl", "basicFrag.glsl");
-	mesh = new FluidMesh(poolSize_, gridWidth_);
+	mesh = new FluidMesh(poolSize_, gridWidth_, 512);
+	texture = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	renderObject = RenderObject(mesh, shader);
+	renderObject.SetTexture(texture);
 
 	host_u = new cl_float[size];
 	for (int i = 0; i < size; ++i) {
 		host_u[i] = mesh->getVertices()[i].y;
 	}
-	host_u[0] = 15;
-	host_u[1] = 8;
-	host_u[gridWidth_ + 1] = 8;
+	/* Create wave in middle of fluid */
+	int center = size / 2 + gridWidth_ / 2;
+	host_u[center] = 2;
+	host_u[center + 1] = 2;
+	host_u[center - 1] = 2;
+	host_u[center + gridWidth_] = 2;
+	host_u[center - gridWidth_] = 2;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
 
@@ -104,5 +111,6 @@ void FluidSim::step(float dt)
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
+	mesh->GenerateNormals();
 	flipBuff = !flipBuff;
 }

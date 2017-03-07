@@ -54,13 +54,13 @@ public:
 
 	Vector3* getVertices() { return vertices; };
 	GLuint getVertexBuffer() { return bufferObject[VERTEX_BUFFER]; };
+	//Generates normals for the vertexes
+	void	GenerateNormals();
 	GLuint	type;	//Primitive type for this mesh (GL_TRIANGLES...etc)
 
 protected:
 	//Buffers all VBO data into graphics memory. Required before drawing!
 	void	BufferData();
-	//Generates normals for the vertexes
-	void	GenerateNormals();
 
 	//VAO for this mesh
 	GLuint	arrayObject;
