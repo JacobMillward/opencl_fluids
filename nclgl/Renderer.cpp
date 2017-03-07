@@ -28,14 +28,16 @@ void	Renderer::Render(const RenderObject &o) {
 	if(o.GetShader() && o.GetMesh()) {
 		GLuint program = o.GetShader()->GetShaderProgram();	
 		glUseProgram(program);
+
+		glUniform3fv(glGetUniformLocation(program, "cameraPos"), 1, (float *)& camera->GetPosition());
+		glUniform1i(glGetUniformLocation(program, "diffuseTex"), 0);
+
 		UpdateShaderMatrices(program);
 		SetShaderLight(program, *light);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, o.GetTexture());
-		glUniform1i(glGetUniformLocation(program, "diffuseTex"), 0);
-
 		o.Draw();
+
+		glUseProgram(0);
 	}
 
 	for(vector<RenderObject*>::const_iterator i = o.GetChildren().begin(); i != o.GetChildren().end(); ++i ) {

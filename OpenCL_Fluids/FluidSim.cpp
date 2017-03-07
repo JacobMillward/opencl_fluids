@@ -39,6 +39,8 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	renderObject = RenderObject(mesh, shader);
 	renderObject.SetTexture(texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	host_u = new cl_float[size];
 	for (int i = 0; i < size; ++i) {
@@ -46,15 +48,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 	}
 	/* Create wave in middle of fluid */
 	int center = size / 2 + gridWidth_ / 2;
-	host_u[center] = 2;
-	host_u[center + 1] = 2;
-	host_u[center - 1] = 2;
-	host_u[center + gridWidth_] = 2;
-	host_u[center + gridWidth_ - 1] = 2;
-	host_u[center + gridWidth_ + 1] = 2;
-	host_u[center - gridWidth_] = 2;
-	host_u[center - gridWidth_ + 1] = 2;
-	host_u[center - gridWidth_ - 1] = 2;
+	host_u[center] = 15;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
 

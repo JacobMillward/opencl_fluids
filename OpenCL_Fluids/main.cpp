@@ -9,10 +9,10 @@ int main() {
 	Window w = Window(800, 600);
 	Renderer r(w, fluidSize);
 
-	FluidSim fluid(fluidSize, fluidSize, 0.005f, 20.0f, "test.jpg");
+	FluidSim fluid(fluidSize, 130, 0.004f, 20.0f);
 	r.AddRenderObject(fluid.getRenderObject());
 
-	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 0.66f, 95.0f));
+	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 800.0f/600.0f, 95.0f));
 	Vector3 cameraPosition = Vector3(45, 25, -50);
 	Vector3 cameraLookAt = Vector3(44, 22, 2);
 	int timeScale = 8;
