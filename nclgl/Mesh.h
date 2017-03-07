@@ -54,6 +54,8 @@ public:
 
 	Vector3* getVertices() { return vertices; };
 	GLuint getVertexBuffer() { return bufferObject[VERTEX_BUFFER]; };
+	Vector3* getNormals() { return normals; };
+	GLuint getNormalBuffer() { return bufferObject[NORMAL_BUFFER]; };
 	//Generates normals for the vertexes
 	void	GenerateNormals();
 	GLuint	type;	//Primitive type for this mesh (GL_TRIANGLES...etc)

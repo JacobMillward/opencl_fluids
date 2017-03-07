@@ -16,8 +16,8 @@ FluidMesh::FluidMesh(float gridSize, int verticesPerSide, int textureWidth) : gr
 	for (int z = 0; z < verticesPerSide; ++z) {
 		for (int x = 0; x < verticesPerSide; ++x) {
 			vertices[z * verticesPerSide + x] = Vector3(x*distanceBetweenPoints, 0.0f, z*distanceBetweenPoints);
-			colours[z * verticesPerSide + x] = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-			textureCoords[z * verticesPerSide + x] = Vector2((float)x * ((float)verticesPerSide/(float)textureWidth), (float)z * ((float)verticesPerSide/(float)textureWidth));
+			colours[z * verticesPerSide + x] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+			textureCoords[z * verticesPerSide + x] = Vector2(x * (verticesPerSide/(float)textureWidth), z * (verticesPerSide/(float)textureWidth));
 		}
 	}
 	/* Generate indices */

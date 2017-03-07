@@ -50,7 +50,11 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 	host_u[center + 1] = 2;
 	host_u[center - 1] = 2;
 	host_u[center + gridWidth_] = 2;
+	host_u[center + gridWidth_ - 1] = 2;
+	host_u[center + gridWidth_ + 1] = 2;
 	host_u[center - gridWidth_] = 2;
+	host_u[center - gridWidth_ + 1] = 2;
+	host_u[center - gridWidth_ - 1] = 2;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
 
@@ -112,5 +116,8 @@ void FluidSim::step(float dt)
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	mesh->GenerateNormals();
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->getNormalBuffer());
+	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(Vector3), mesh->getNormals(), GL_DYNAMIC_DRAW);
 	flipBuff = !flipBuff;
 }

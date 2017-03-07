@@ -251,7 +251,7 @@ void	Mesh::BufferData()	{
 	if (normals) {
 		glGenBuffers(1, &bufferObject[NORMAL_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[NORMAL_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector3), normals, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector3), normals, GL_DYNAMIC_DRAW);
 		glVertexAttribPointer(NORMAL_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(NORMAL_BUFFER);
 	}
