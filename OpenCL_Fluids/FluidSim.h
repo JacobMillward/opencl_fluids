@@ -10,8 +10,8 @@ public:
 	~FluidSim();
 
 	void step(float dt);
-	RenderObject getRenderObject() { return renderObject; };
-
+	RenderObject getFluidRenderObject() { return fluidRenderObject; };
+	RenderObject getCubeRenderObject() { return cubeRenderObject; };
 private:
 	float poolSize_;
 	int gridWidth_;
@@ -30,10 +30,12 @@ private:
 	cl::Buffer v;
 	cl_float* host_u;
 
-	Shader* shader;
-	FluidMesh* mesh;
-	GLuint texture;
-	RenderObject renderObject;
+	Shader* fluidShader;
+	FluidMesh* fluidMesh;
+	Mesh* cubeMesh;
+	GLuint fluidTexture;
+	RenderObject fluidRenderObject;
+	RenderObject cubeRenderObject;
 
 	bool flipBuff = true;
 };

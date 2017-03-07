@@ -32,22 +32,28 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 	global = cl::NDRange(size);
 	local = cl::NDRange(1);
 
-	/* Create renderobject */
-	shader = new Shader("BasicVert.glsl", "basicFrag.glsl");
-	mesh = new FluidMesh(poolSize_, gridWidth_, 256);
-	texture = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_AUTO,
+	/* Create fluid mesh */
+	fluidShader = new Shader("BasicVert.glsl", "PhongLightingFrag.glsl");
+	fluidMesh = new FluidMesh(poolSize_, gridWidth_, 256);
+	fluidTexture = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	renderObject = RenderObject(mesh, shader);
-	renderObject.SetTexture(texture);
+	fluidRenderObject = RenderObject(fluidMesh, fluidShader);
+	fluidRenderObject.SetTexture(fluidTexture);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, fluidTexture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	/* Create cube */
+	cubeMesh = Mesh::LoadMeshFile("cube.asciimesh");
+	cubeRenderObject = RenderObject(cubeMesh, fluidShader);
+
+	/* Set up host buffer */
 	host_u = new cl_float[size];
 	for (int i = 0; i < size; ++i) {
-		host_u[i] = mesh->getVertices()[i].y;
+		host_u[i] = fluidMesh->getVertices()[i].y;
 	}
+
 	/* Create wave in middle of fluid */
 	int center = size / 2 + gridWidth_ / 2;
 	host_u[center] = 5;
@@ -58,8 +64,9 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 FluidSim::~FluidSim()
 {
 	delete program;
-	delete shader;
-	delete mesh;
+	delete fluidShader;
+	delete fluidMesh;
+	delete cubeMesh;
 	delete host_u;
 }
 
@@ -104,16 +111,16 @@ void FluidSim::step(float dt)
 	{
 		std::cout << "Error reading buffers onto host (" << err << ")\n";
 	}
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->getVertexBuffer());
+	glBindBuffer(GL_ARRAY_BUFFER, fluidMesh->getVertexBuffer());
 	Vector3* ptr = (Vector3*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 	for (int i = 0; i < gridWidth_*gridWidth_; ++i) {
 		ptr[i].y = host_u[i];
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	mesh->GenerateNormals();
+	fluidMesh->GenerateNormals();
 
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->getNormalBuffer());
-	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(Vector3), mesh->getNormals(), GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, fluidMesh->getNormalBuffer());
+	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(Vector3), fluidMesh->getNormals(), GL_DYNAMIC_DRAW);
 	flipBuff = !flipBuff;
 }

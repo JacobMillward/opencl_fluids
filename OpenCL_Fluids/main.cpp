@@ -10,8 +10,8 @@ int main() {
 	Renderer r(w, fluidSize);
 
 	FluidSim fluid(fluidSize, 130, 0.004f, 3.0f);
-	r.AddRenderObject(fluid.getRenderObject());
-
+	r.AddRenderObject(fluid.getFluidRenderObject());
+	r.AddRenderObject(fluid.getCubeRenderObject());
 	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 800.0f/600.0f, 95.0f));
 	Vector3 cameraPosition = Vector3(45, 25, -50);
 	Vector3 cameraLookAt = Vector3(44, 22, 2);
