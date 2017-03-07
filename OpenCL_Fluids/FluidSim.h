@@ -6,7 +6,7 @@
 class FluidSim
 {
 public:
-	FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::string texture = "poolwatr.png");
+	FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::string texture = "water.png");
 	~FluidSim();
 
 	void step(float dt);

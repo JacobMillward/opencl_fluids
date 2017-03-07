@@ -34,7 +34,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 
 	/* Create renderobject */
 	shader = new Shader("BasicVert.glsl", "basicFrag.glsl");
-	mesh = new FluidMesh(poolSize_, gridWidth_, 512);
+	mesh = new FluidMesh(poolSize_, gridWidth_, 256);
 	texture = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	renderObject = RenderObject(mesh, shader);
