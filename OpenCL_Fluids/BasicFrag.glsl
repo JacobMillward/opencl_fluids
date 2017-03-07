@@ -12,9 +12,11 @@ in Vertex {
 	vec3 worldPos;
 } IN;
 
+out vec4 FragmentColour;
+
 void main (void) {
 	vec4 diffuse = texture(diffuseTex, IN.texCoord);
-    vec3 incident = normalize(lightPos - IN.worldPos);
+    vec3 incident = -normalize(lightPos - IN.worldPos);
     float lambert = max(0.0, dot(incident, IN.normal));
 
     float dist = length(lightPos - IN.worldPos);
@@ -27,7 +29,7 @@ void main (void) {
 
 	vec3 colour = (diffuse.rgb * lightColour.rgb);
     colour += (lightColour.rgb * sFactor) * 0.33;
-    gl_FragColor = vec4(colour * atten * lambert, diffuse.a);
-    gl_FragColor.rgb += (diffuse.rgb * lightColour.rgb) * 0.1;
-
+    FragmentColour = vec4(colour * atten * lambert, diffuse.a);
+    FragmentColour.rgb += (diffuse.rgb * lightColour.rgb) * 0.1;
+    //FragmentColour = diffuse;
 }

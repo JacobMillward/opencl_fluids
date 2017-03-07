@@ -41,6 +41,8 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 	renderObject.SetTexture(texture);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	host_u = new cl_float[size];
 	for (int i = 0; i < size; ++i) {
@@ -48,7 +50,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 	}
 	/* Create wave in middle of fluid */
 	int center = size / 2 + gridWidth_ / 2;
-	host_u[center] = 15;
+	host_u[center] = 5;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
 

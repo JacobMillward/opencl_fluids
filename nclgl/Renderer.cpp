@@ -5,7 +5,7 @@ Renderer::Renderer(Window &parent, float fluidSize) : OGLRenderer(parent)	{
 	//Create our light
 	light = new  Light(Vector3(fluidSize/2.0f, 20.0f, fluidSize/2.0f),
 		Vector4(1, 1, 1, 1),
-		fluidSize * 2.0f);
+		fluidSize);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -29,7 +29,7 @@ void	Renderer::Render(const RenderObject &o) {
 		GLuint program = o.GetShader()->GetShaderProgram();	
 		glUseProgram(program);
 
-		glUniform3fv(glGetUniformLocation(program, "cameraPos"), 1, (float *)& camera->GetPosition());
+		glUniform3fv(glGetUniformLocation(program, "cameraPos"), 1, (float*)&camera->GetPosition());
 		glUniform1i(glGetUniformLocation(program, "diffuseTex"), 0);
 
 		UpdateShaderMatrices(program);
