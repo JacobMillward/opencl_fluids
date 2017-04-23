@@ -144,7 +144,7 @@ bool	Shader::LoadShaderFile(string from, string &into)	{
 	
 	into[into.size() - 1] = '\n';
 
-	cout << into << endl << endl;
+	//cout << into << endl << endl;
 
 	file.close();
 	cout << "Loaded shader text!" << endl << endl;
