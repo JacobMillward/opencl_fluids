@@ -2,16 +2,23 @@
 #include "OpenClUtil.h"
 #include "../nclgl/RenderObject.h"
 #include "FluidMesh.h"
+#include <chrono>
+
+typedef common_type<chrono::duration<long long, ratio<1, 1000000000>>, chrono::duration<long long, ratio<1, 1000000000>>>::type TimeDifference;
 
 class FluidSim
 {
 public:
-	FluidSim(float poolSize, int gridWidth, float c, float maxSlope, string texture = "water.png");
+	FluidSim(float poolSize, int gridWidth, float c, float maxSlope, cl_device_type deviceType, string texture = "water.png");
 	~FluidSim();
 
 	void step(float dt);
 	RenderObject getFluidRenderObject() const { return fluidRenderObject; };
 	RenderObject getCubeRenderObject() const { return cubeRenderObject; };
+
+	TimeDifference getKernelExecutionTime() const;
+	TimeDifference getBufferCopyExecutionTime() const;
+
 private:
 	float poolSize_;
 	int gridWidth_;
@@ -38,4 +45,6 @@ private:
 	RenderObject cubeRenderObject;
 
 	bool flipBuff = true;
+	TimeDifference kernelExecutionTime;
+	TimeDifference bufferCopyExecutionTime;
 };

@@ -80,11 +80,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\GLEW\include;..\SOIL;$(AMDAPPSDKROOT)\include;$(CUDA_PATH)\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GLEW\include;..\SOIL;$(INTELOCLSDKROOT)\include;$(AMDAPPSDKROOT)\include;$(CUDA_PATH)\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>OpenCL.lib;nclgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\GLEW\lib;..\SOIL\$(Configuration);..\$(Configuration);$(LibraryPath);%CUDA_PATH%\lib\Win32;%AMDAPPSDKROOT%\lib\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\GLEW\lib;..\SOIL\$(Configuration);..\$(Configuration);$(LibraryPath);$(INTELOCLSDKROOT)\lib\x86;$(CUDA_PATH)\lib\Win32;$(AMDAPPSDKROOT)\lib\x86</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

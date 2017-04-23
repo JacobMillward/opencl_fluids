@@ -1,12 +1,13 @@
 #include "GL/glew.h"
 #include "FluidSim.h"
 #include <iostream>
+#include <chrono>
 
-FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, string texturePath) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize / gridWidth), c2_(c * c), maxSlope_(maxSlope)
+FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, cl_device_type deviceType, string texturePath) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize / gridWidth), c2_(c * c), maxSlope_(maxSlope), clUtil(deviceType)
 {
 	auto size = gridWidth_ * gridWidth_;
 	/* Set up OpenCL */
-	clUtil = OpenCLUtil();
+	//clUtil = OpenCLUtil(deviceType);
 
 	clUtil.printDeviceInfo(clUtil.getDevice());
 
@@ -73,6 +74,8 @@ FluidSim::~FluidSim()
 
 void FluidSim::step(float dt)
 {
+	auto startTime = chrono::steady_clock::now();
+
 	/* Bind updated values */
 	if (flipBuff)
 	{
@@ -95,6 +98,8 @@ void FluidSim::step(float dt)
 
 	/* Wait for command queue to finish */
 	clFinish(clUtil.getCommandQueue()());
+
+	auto kernelEndTime = chrono::steady_clock::now();
 
 	// Explicit copy via host because cl/gl interop is being an ass
 	// Only copy the changed buffer
@@ -125,4 +130,18 @@ void FluidSim::step(float dt)
 	glBindBuffer(GL_ARRAY_BUFFER, fluidMesh->getNormalBuffer());
 	glBufferData(GL_ARRAY_BUFFER, gridWidth_ * gridWidth_ * sizeof(Vector3), fluidMesh->getNormals(), GL_DYNAMIC_DRAW);
 	flipBuff = !flipBuff;
+
+	auto endTime = chrono::steady_clock::now();
+	kernelExecutionTime = kernelEndTime - startTime;
+	bufferCopyExecutionTime = endTime - kernelEndTime;
+}
+
+TimeDifference FluidSim::getKernelExecutionTime() const
+{
+	return kernelExecutionTime;
+}
+
+TimeDifference FluidSim::getBufferCopyExecutionTime() const
+{
+	return bufferCopyExecutionTime;
 }

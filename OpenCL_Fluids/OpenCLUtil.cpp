@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 
-OpenCLUtil::OpenCLUtil()
+OpenCLUtil::OpenCLUtil(cl_device_type type)
 {
 	/* Search all platforms for a GPU device */
 
@@ -18,40 +18,45 @@ OpenCLUtil::OpenCLUtil()
 
 	for (size_t i = 0; i < allPlatforms.size(); ++i)
 	{
-		//Get all GPU devices for this platform
-		allPlatforms[i].getDevices(CL_DEVICE_TYPE_GPU, &allDevices);
-		if (allDevices.size() == 0)
+
+		allPlatforms[i].getDevices(type, &allDevices);
+
+		if (allDevices.size() > 0)
 		{
+			//Identify the platform for posterity
+			std::cout << "Platform Name: " << allPlatforms[i].getInfo<CL_PLATFORM_NAME>() << "\n";
+			std::cout << "Platform Vendor: " << allPlatforms[i].getInfo<CL_PLATFORM_VENDOR>() << "\n";
+
+			this->platform_ = allPlatforms[i];
+			break;
 		}
-		//Identify the platform for posterity
-		std::cout << "Platform Name: " << allPlatforms[i].getInfo<CL_PLATFORM_NAME>() << "\n";
-		std::cout << "Platform Vendor: " << allPlatforms[i].getInfo<CL_PLATFORM_VENDOR>() << "\n";
-		this->platform_ = allPlatforms[i];
-		break;
 	}
 
 	if (allDevices.size() < 1)
 	{
-		throw "No GPU Devices found.";
+		throw "No Devices found.";
 	}
 
 	// Magic fuckery going on here.
-	cl_context_properties props[] =
-	{
-		//OpenCL platform
-		CL_CONTEXT_PLATFORM, reinterpret_cast<cl_context_properties>((this->platform_)()),
-		//OpenGL context
-		CL_GL_CONTEXT_KHR, reinterpret_cast<cl_context_properties>(wglGetCurrentContext()),
-		//HDC used to create the OpenGL context
-		CL_WGL_HDC_KHR, reinterpret_cast<cl_context_properties>(wglGetCurrentDC()),
-		0
-	};
-
-	/* Create OpenCL Context */
-	this->context_ = cl::Context(CL_DEVICE_TYPE_GPU, props);
+	//cl_context_properties props[] =
+	//{
+	//	//OpenCL platform
+	//	CL_CONTEXT_PLATFORM, reinterpret_cast<cl_context_properties>((this->platform_)()),
+	//	//OpenGL context
+	//	CL_GL_CONTEXT_KHR, reinterpret_cast<cl_context_properties>(wglGetCurrentContext()),
+	//	//HDC used to create the OpenGL context
+	//	CL_WGL_HDC_KHR, reinterpret_cast<cl_context_properties>(wglGetCurrentDC()),
+	//	0
+	//};
 
 	/* Set device */
-	this->device_ = this->context_.getInfo<CL_CONTEXT_DEVICES>()[0];
+	this->device_ = allDevices[0];
+	//printDeviceInfo({ this->device_ });
+
+	/* Create OpenCL Context */
+	this->context_ = cl::Context(this->device_);
+
+	
 
 	/* Create command queue */
 	this->queue_ = cl::CommandQueue(this->context_, this->device_);
@@ -69,7 +74,7 @@ cl::Program* OpenCLUtil::createProgram(std::string filePath) const
 		std::istreambuf_iterator<char>(sourceFile),
 		(std::istreambuf_iterator<char>()));
 	cl::Program::Sources source(1, std::make_pair(sourceCode.c_str(), sourceCode.length()));
-	for (auto s : source) { printf("%s\n", s.first); }
+	//for (auto s : source) { printf("%s\n", s.first); }
 	//Create a program from the source in the context
 	cl::Program* program = new cl::Program(this->context_, source);
 
@@ -104,12 +109,32 @@ cl::BufferGL* OpenCLUtil::createSharedBuffer(GLuint* vbo, size_t size, cl_mem_fl
 
 void OpenCLUtil::printDeviceInfo(cl::Device device)
 {
+	CL_DEVICE_TYPE_CPU;
+	CL_DEVICE_TYPE_GPU;
+	std::string deviceType = {};
+
+	switch (device.getInfo<CL_DEVICE_TYPE>())
+	{
+	case CL_DEVICE_TYPE_ACCELERATOR:
+		deviceType = "Accelerator";
+		break;
+	case CL_DEVICE_TYPE_CPU:
+		deviceType = "CPU";
+		break;
+	case CL_DEVICE_TYPE_GPU:
+		deviceType = "GPU";
+		break;
+	default:
+		deviceType = "Unknown";
+	}
 	/* Identify the device */
+	std::cout << "Device Type: " << deviceType << "\n";
 	std::cout << "Device Name: " << device.getInfo<CL_DEVICE_NAME>() << "\n";
 	std::cout << "Device Vendor: " << device.getInfo<CL_DEVICE_VENDOR>() << "\n";
+	std::cout << "Device Version: " << device.getInfo<CL_DEVICE_VERSION>() << "\n";
 	std::cout << "Device Max Compute Units: " << device.getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>() << "\n";
 	std::cout << "Device Global Memory: " << device.getInfo<CL_DEVICE_GLOBAL_MEM_SIZE>() << "\n";
 	std::cout << "Device Max Clock Frequency: " << device.getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() << "\n";
 	std::cout << "Device Max Allocateable Memory: " << device.getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>() << "\n";
-	std::cout << "Device Local Memory: " << device.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() << "\n";
+	std::cout << "Device Local Memory: " << device.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() << "\n\n";
 }
