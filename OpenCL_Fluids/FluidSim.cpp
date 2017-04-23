@@ -2,9 +2,9 @@
 #include "FluidSim.h"
 #include <iostream>
 
-FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::string texturePath) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize / gridWidth), c2_(c*c), maxSlope_(maxSlope)
+FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, string texturePath) : poolSize_(poolSize), gridWidth_(gridWidth), h_(poolSize / gridWidth), c2_(c * c), maxSlope_(maxSlope)
 {
-	int size = gridWidth_ * gridWidth_;
+	auto size = gridWidth_ * gridWidth_;
 	/* Set up OpenCL */
 	clUtil = OpenCLUtil();
 
@@ -36,7 +36,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 	fluidShader = new Shader("BasicVert.glsl", "PhongLightingFrag.glsl");
 	fluidMesh = new FluidMesh(poolSize_, gridWidth_, 256);
 	fluidTexture = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	                                     SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	fluidRenderObject = RenderObject(fluidMesh, fluidShader);
 	fluidRenderObject.SetTexture(fluidTexture);
 	glActiveTexture(GL_TEXTURE0);
@@ -50,12 +50,13 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::
 
 	/* Set up host buffer */
 	host_u = new cl_float[size];
-	for (int i = 0; i < size; ++i) {
+	for (auto i = 0; i < size; ++i)
+	{
 		host_u[i] = fluidMesh->getVertices()[i].y;
 	}
 
 	/* Create wave in middle of fluid */
-	int center = size / 2 + gridWidth_ / 2;
+	auto center = size / 2 + gridWidth_ / 2;
 	host_u[center] = 5;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
@@ -77,13 +78,11 @@ void FluidSim::step(float dt)
 	{
 		kernel.setArg(0, clBuff_u);
 		kernel.setArg(1, clBuff_u2);
-
 	}
 	else
 	{
 		kernel.setArg(0, clBuff_u2);
 		kernel.setArg(1, clBuff_u);
-
 	}
 	kernel.setArg(7, dt);
 
@@ -91,7 +90,7 @@ void FluidSim::step(float dt)
 	auto err = clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
 	if (err != CL_SUCCESS)
 	{
-		std::cout << "Error running kernel (" << err << ")\n";
+		cout << "Error running kernel (" << err << ")\n";
 	}
 
 	/* Wait for command queue to finish */
@@ -99,21 +98,24 @@ void FluidSim::step(float dt)
 
 	// Explicit copy via host because cl/gl interop is being an ass
 	// Only copy the changed buffer
-	
-	if (flipBuff) {
-		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u2, CL_TRUE, 0, gridWidth_*gridWidth_ * sizeof(cl_float), host_u);
+
+	if (flipBuff)
+	{
+		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u2, CL_TRUE, 0, gridWidth_ * gridWidth_ * sizeof(cl_float), host_u);
 	}
-	else {
-		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u, CL_TRUE, 0, gridWidth_*gridWidth_ * sizeof(cl_float), host_u);
+	else
+	{
+		err = clUtil.getCommandQueue().enqueueReadBuffer(clBuff_u, CL_TRUE, 0, gridWidth_ * gridWidth_ * sizeof(cl_float), host_u);
 	}
 	clFinish(clUtil.getCommandQueue()());
 	if (err != CL_SUCCESS)
 	{
-		std::cout << "Error reading buffers onto host (" << err << ")\n";
+		cout << "Error reading buffers onto host (" << err << ")\n";
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, fluidMesh->getVertexBuffer());
-	Vector3* ptr = (Vector3*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-	for (int i = 0; i < gridWidth_*gridWidth_; ++i) {
+	auto ptr = static_cast<Vector3*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+	for (auto i = 0; i < gridWidth_ * gridWidth_; ++i)
+	{
 		ptr[i].y = host_u[i];
 	}
 	glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -121,6 +123,6 @@ void FluidSim::step(float dt)
 	fluidMesh->GenerateNormals();
 
 	glBindBuffer(GL_ARRAY_BUFFER, fluidMesh->getNormalBuffer());
-	glBufferData(GL_ARRAY_BUFFER, gridWidth_*gridWidth_ * sizeof(Vector3), fluidMesh->getNormals(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, gridWidth_ * gridWidth_ * sizeof(Vector3), fluidMesh->getNormals(), GL_DYNAMIC_DRAW);
 	flipBuff = !flipBuff;
 }

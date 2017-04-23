@@ -1,7 +1,8 @@
-#include <GL\glew.h>
+#include <GL/glew.h>
 #include "OpenCLUtil.h"
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 OpenCLUtil::OpenCLUtil()
 {
@@ -10,26 +11,27 @@ OpenCLUtil::OpenCLUtil()
 	std::vector<cl::Device> allDevices;
 	std::vector<cl::Platform> allPlatforms;
 	cl::Platform::get(&allPlatforms);
-	if (allPlatforms.size() == 0) {
+	if (allPlatforms.size() == 0)
+	{
 		throw "No platforms found!";
 	}
 
-	for (size_t i = 0; i < allPlatforms.size(); ++i) {
+	for (size_t i = 0; i < allPlatforms.size(); ++i)
+	{
 		//Get all GPU devices for this platform
 		allPlatforms[i].getDevices(CL_DEVICE_TYPE_GPU, &allDevices);
-		if (allDevices.size() == 0) {
-			continue;
+		if (allDevices.size() == 0)
+		{
 		}
-		else {
-			//Identify the platform for posterity
-			std::cout << "Platform Name: " << allPlatforms[i].getInfo<CL_PLATFORM_NAME>() << "\n";
-			std::cout << "Platform Vendor: " << allPlatforms[i].getInfo<CL_PLATFORM_VENDOR>() << "\n";
-			this->platform_ = allPlatforms[i];
-			break;
-		}
+		//Identify the platform for posterity
+		std::cout << "Platform Name: " << allPlatforms[i].getInfo<CL_PLATFORM_NAME>() << "\n";
+		std::cout << "Platform Vendor: " << allPlatforms[i].getInfo<CL_PLATFORM_VENDOR>() << "\n";
+		this->platform_ = allPlatforms[i];
+		break;
 	}
 
-	if (allDevices.size() < 1) {
+	if (allDevices.size() < 1)
+	{
 		throw "No GPU Devices found.";
 	}
 
@@ -37,11 +39,11 @@ OpenCLUtil::OpenCLUtil()
 	cl_context_properties props[] =
 	{
 		//OpenCL platform
-		CL_CONTEXT_PLATFORM, (cl_context_properties)(this->platform_)(),
+		CL_CONTEXT_PLATFORM, reinterpret_cast<cl_context_properties>((this->platform_)()),
 		//OpenGL context
-		CL_GL_CONTEXT_KHR,   (cl_context_properties)wglGetCurrentContext(),
+		CL_GL_CONTEXT_KHR, reinterpret_cast<cl_context_properties>(wglGetCurrentContext()),
 		//HDC used to create the OpenGL context
-		CL_WGL_HDC_KHR,     (cl_context_properties)wglGetCurrentDC(),
+		CL_WGL_HDC_KHR, reinterpret_cast<cl_context_properties>(wglGetCurrentDC()),
 		0
 	};
 
@@ -59,7 +61,7 @@ OpenCLUtil::~OpenCLUtil()
 {
 }
 
-cl::Program * OpenCLUtil::createProgram(std::string filePath)
+cl::Program* OpenCLUtil::createProgram(std::string filePath) const
 {
 	//Read source file
 	std::ifstream sourceFile(filePath);
@@ -67,33 +69,34 @@ cl::Program * OpenCLUtil::createProgram(std::string filePath)
 		std::istreambuf_iterator<char>(sourceFile),
 		(std::istreambuf_iterator<char>()));
 	cl::Program::Sources source(1, std::make_pair(sourceCode.c_str(), sourceCode.length()));
-	for (auto s : source) { std::printf("%s\n", s.first); }
+	for (auto s : source) { printf("%s\n", s.first); }
 	//Create a program from the source in the context
 	cl::Program* program = new cl::Program(this->context_, source);
 
 	//Build the program for the device
-	if (program->build({ this->device_ }) != CL_SUCCESS) {
+	if (program->build({this->device_}) != CL_SUCCESS)
+	{
 		std::cout << "Error building program.\n---Build Log---\n" << program->getBuildInfo<CL_PROGRAM_BUILD_LOG>(this->device_) << "\n";
 	}
 
 	return program;
 }
 
-cl::BufferGL* OpenCLUtil::createSharedBuffer(GLuint* vbo, size_t size, cl_mem_flags flags)
+cl::BufferGL* OpenCLUtil::createSharedBuffer(GLuint* vbo, size_t size, cl_mem_flags flags) const
 {
-
 	//Create buffer object
 	glGenBuffers(1, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
 
 	//Initialize buffer object
 	//float test[4] = {0, 1, 2, 3};
-	glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-	
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+
 	//Create OpenCL buffer from GL VBO
 	cl_int err;
 	auto b = new cl::BufferGL(this->context_, flags, *vbo, &err);
-	if (err != CL_SUCCESS) {
+	if (err != CL_SUCCESS)
+	{
 		std::cout << "Error creating shared buffer(" << err << ")\n";
 	}
 	return b;
@@ -110,4 +113,3 @@ void OpenCLUtil::printDeviceInfo(cl::Device device)
 	std::cout << "Device Max Allocateable Memory: " << device.getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>() << "\n";
 	std::cout << "Device Local Memory: " << device.getInfo<CL_DEVICE_LOCAL_MEM_SIZE>() << "\n";
 }
-

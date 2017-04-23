@@ -1,5 +1,5 @@
 #pragma once
-#include "..\nclgl\Mesh.h"
+#include "../nclgl/Mesh.h"
 
 class FluidMesh : public Mesh
 {
@@ -10,4 +10,3 @@ public:
 private:
 	int gridSize;
 };
-

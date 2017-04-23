@@ -1,32 +1,35 @@
 #include "Mesh.h"
 
-Mesh::Mesh(void)	{
+Mesh::Mesh(void)
+{
 	//Most objects in OpenGL are represented as 'names' - an unsigned int
 	//index, really. They are always generated and destroyed by OpenGL 
 	//functions. Most of these functions allow you to generate multiple
 	//names at once (the first parameter here is a count).
 	glGenVertexArrays(1, &arrayObject);
-	
-	for(int i = 0; i < MAX_BUFFER; ++i) {
+
+	for (int i = 0; i < MAX_BUFFER; ++i)
+	{
 		bufferObject[i] = 0;
 	}
 
-	numVertices  = 0;
-	type		 = GL_TRIANGLES;
+	numVertices = 0;
+	type = GL_TRIANGLES;
 
 	//Later tutorial stuff
-	numIndices    = 0;
-	vertices	  = NULL;
-	textureCoords = NULL;
-	normals		  = NULL;
-	tangents	  = NULL;
-	indices		  = NULL;
-	colours		  = NULL;
+	numIndices = 0;
+	vertices = nullptr;
+	textureCoords = nullptr;
+	normals = nullptr;
+	tangents = nullptr;
+	indices = nullptr;
+	colours = nullptr;
 }
 
-Mesh::~Mesh(void)	{
-	glDeleteVertexArrays(1, &arrayObject);			//Delete our VAO
-	glDeleteBuffers(MAX_BUFFER, bufferObject);		//Delete our VBOs
+Mesh::~Mesh(void)
+{
+	glDeleteVertexArrays(1, &arrayObject); //Delete our VAO
+	glDeleteBuffers(MAX_BUFFER, bufferObject); //Delete our VBOs
 
 	//Later tutorial stuff
 	delete[]vertices;
@@ -37,7 +40,8 @@ Mesh::~Mesh(void)	{
 	delete[]colours;
 }
 
-void Mesh::Draw()	{
+void Mesh::Draw()
+{
 	/*
 	To render with a mesh in OpenGL, we need to bind all of the buffers
 	containing vertex data to the pipeline, and attach them to the
@@ -52,22 +56,24 @@ void Mesh::Draw()	{
 	//using indices or not. Both start off taking a primitive type - 
 	//triangles, quads, lines, points etc. 
 
-	if(bufferObject[INDEX_BUFFER]) {
+	if (bufferObject[INDEX_BUFFER])
+	{
 		/*
 		If we have an index buffer, we tell OpenGL how to parse that
 		buffer data (is it bytes/ints/shorts), and how many data
 		elements there are. The last parameter should nearly always be 0,
 		it's part of the old OpenGL spec.
 		*/
-		glDrawElements(type, numIndices, GL_UNSIGNED_INT, 0);
+		glDrawElements(type, numIndices, GL_UNSIGNED_INT, nullptr);
 	}
-	else{
+	else
+	{
 		/*
 		If we don't have indices, we can just use this function.
 		Its extra parameters define which is the first vertex
 		to draw, and how many vertices past this point to draw.
 		*/
-		glDrawArrays(type, 0, numVertices);	//Draw the triangle!
+		glDrawArrays(type, 0, numVertices); //Draw the triangle!
 	}
 	/*
 	We don't strictly have to do this, but 'undoing' whatever
@@ -75,34 +81,35 @@ void Mesh::Draw()	{
 	from getting incorrect states, or otherwise not doing what
 	you want it to do.
 	*/
-	glBindVertexArray(0);	
+	glBindVertexArray(0);
 }
 
-Mesh* Mesh::GenerateTriangle()	{
-	Mesh*m = new Mesh();
+Mesh* Mesh::GenerateTriangle()
+{
+	Mesh* m = new Mesh();
 	m->numVertices = 3;
 
-	m->vertices		= new Vector3[m->numVertices];
-	m->vertices[0]	= Vector3(0.0f,	0.5f,	0.0f);
-	m->vertices[1]	= Vector3(0.5f,  -0.5f,	0.0f);
-	m->vertices[2]	= Vector3(-0.5f, -0.5f,	0.0f);
+	m->vertices = new Vector3[m->numVertices];
+	m->vertices[0] = Vector3(0.0f, 0.5f, 0.0f);
+	m->vertices[1] = Vector3(0.5f, -0.5f, 0.0f);
+	m->vertices[2] = Vector3(-0.5f, -0.5f, 0.0f);
 
-	m->textureCoords	= new Vector2[m->numVertices];
-	m->textureCoords[0] = Vector2(0.5f,	0.0f);
-	m->textureCoords[1] = Vector2(1.0f,	1.0f);
-	m->textureCoords[2] = Vector2(0.0f,	1.0f);
+	m->textureCoords = new Vector2[m->numVertices];
+	m->textureCoords[0] = Vector2(0.5f, 0.0f);
+	m->textureCoords[1] = Vector2(1.0f, 1.0f);
+	m->textureCoords[2] = Vector2(0.0f, 1.0f);
 
-	m->colours		= new Vector4[m->numVertices];
-	m->colours[0]	= Vector4(1.0f, 0.0f, 0.0f,1.0f); 
-	m->colours[1]	= Vector4(0.0f, 1.0f, 0.0f,1.0f);
-	m->colours[2]	= Vector4(0.0f, 0.0f, 1.0f,1.0f);
+	m->colours = new Vector4[m->numVertices];
+	m->colours[0] = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	m->colours[1] = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+	m->colours[2] = Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
 	m->BufferData();
 
 	return m;
 }
 
-Mesh * Mesh::GeneratePlane(float sideLength, int pointsPerSide)
+Mesh* Mesh::GeneratePlane(float sideLength, int pointsPerSide)
 {
 	Mesh* m = new Mesh();
 	m->type = GL_POINTS;
@@ -112,9 +119,11 @@ Mesh * Mesh::GeneratePlane(float sideLength, int pointsPerSide)
 
 	m->vertices = new Vector3[m->numVertices];
 	m->colours = new Vector4[m->numVertices];
-	for (int y = 0; y < pointsPerSide; ++y) {
-		for (int x = 0; x < pointsPerSide; ++x) {
-			m->vertices[y * pointsPerSide + x] = Vector3(x*distanceBetweenPoints, 0.0f, y*distanceBetweenPoints);
+	for (int y = 0; y < pointsPerSide; ++y)
+	{
+		for (int x = 0; x < pointsPerSide; ++x)
+		{
+			m->vertices[y * pointsPerSide + x] = Vector3(x * distanceBetweenPoints, 0.0f, y * distanceBetweenPoints);
 			m->colours[y * pointsPerSide + x] = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 	}
@@ -123,37 +132,43 @@ Mesh * Mesh::GeneratePlane(float sideLength, int pointsPerSide)
 	return m;
 }
 
-Mesh*	Mesh::LoadMeshFile(const string &filename) {
+Mesh* Mesh::LoadMeshFile(const string& filename)
+{
 	ifstream f(filename);
 
-	if(!f) {
-		return NULL;
+	if (!f)
+	{
+		return nullptr;
 	}
 
-	Mesh*m = new Mesh();
+	auto m = new Mesh();
 	f >> m->numVertices;
 
-	int hasTex = 0;
-	int hasColour = 0;
+	auto hasTex = 0;
+	auto hasColour = 0;
 
 	f >> hasTex;
 	f >> hasColour;
 
 	m->vertices = new Vector3[m->numVertices];
 
-	if(hasTex) {
+	if (hasTex)
+	{
 		m->textureCoords = new Vector2[m->numVertices];
-		m->colours		 = new Vector4[m->numVertices];
+		m->colours = new Vector4[m->numVertices];
 	}
 
-	for (unsigned int i = 0; i < m->numVertices; ++i) {
+	for (unsigned int i = 0; i < m->numVertices; ++i)
+	{
 		f >> m->vertices[i].x;
 		f >> m->vertices[i].y;
 		f >> m->vertices[i].z;
 	}
 
-	if (hasColour) {
-		for (unsigned int i = 0; i < m->numVertices; ++i) {
+	if (hasColour)
+	{
+		for (unsigned int i = 0; i < m->numVertices; ++i)
+		{
 			unsigned char r, g, b, a;
 
 			f >> r;
@@ -167,8 +182,10 @@ Mesh*	Mesh::LoadMeshFile(const string &filename) {
 		}
 	}
 
-	if (hasTex) {
-		for (unsigned int i = 0; i < m->numVertices; ++i) {
+	if (hasTex)
+	{
+		for (unsigned int i = 0; i < m->numVertices; ++i)
+		{
 			f >> m->textureCoords[i].x;
 			f >> m->textureCoords[i].y;
 		}
@@ -178,7 +195,8 @@ Mesh*	Mesh::LoadMeshFile(const string &filename) {
 	return m;
 }
 
-void	Mesh::BufferData()	{
+void Mesh::BufferData()
+{
 	/*
 		To more efficiently bind and unbind the states required to draw a mesh,
 		we can encapsulate them all inside a Vertex Array Object.
@@ -218,41 +236,45 @@ void	Mesh::BufferData()	{
 	//Buffer vertex data
 	glGenBuffers(1, &bufferObject[VERTEX_BUFFER]);
 	glBindBuffer(GL_ARRAY_BUFFER, bufferObject[VERTEX_BUFFER]);
-	glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector3), vertices, GL_DYNAMIC_DRAW);
-	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0); 
+	glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector3), vertices, GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(VERTEX_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 	glEnableVertexAttribArray(VERTEX_BUFFER);
 
 	////Buffer texture data
-	if (textureCoords) {
+	if (textureCoords)
+	{
 		glGenBuffers(1, &bufferObject[TEXTURE_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[TEXTURE_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector2), textureCoords, GL_STATIC_DRAW);
-		glVertexAttribPointer(TEXTURE_BUFFER, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector2), textureCoords, GL_STATIC_DRAW);
+		glVertexAttribPointer(TEXTURE_BUFFER, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(TEXTURE_BUFFER);
 	}
 
 	//buffer colour data
-	if (colours)	{
+	if (colours)
+	{
 		glGenBuffers(1, &bufferObject[COLOUR_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[COLOUR_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(Vector4), colours, GL_STATIC_DRAW);
-		glVertexAttribPointer(COLOUR_BUFFER, 4, GL_FLOAT, GL_FALSE, 0, 0); 
+		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector4), colours, GL_STATIC_DRAW);
+		glVertexAttribPointer(COLOUR_BUFFER, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(COLOUR_BUFFER);
 	}
 
 	//buffer index data
-	if(indices) {
+	if (indices)
+	{
 		glGenBuffers(1, &bufferObject[INDEX_BUFFER]);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferObject[INDEX_BUFFER]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices*sizeof(GLuint), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), indices, GL_STATIC_DRAW);
 	}
 
 	//buffer normal data
-	if (normals) {
+	if (normals)
+	{
 		glGenBuffers(1, &bufferObject[NORMAL_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferObject[NORMAL_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector3), normals, GL_DYNAMIC_DRAW);
-		glVertexAttribPointer(NORMAL_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(NORMAL_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glEnableVertexAttribArray(NORMAL_BUFFER);
 	}
 	//Once we're done with the vertex buffer binding, we can unbind the VAO,
@@ -262,32 +284,38 @@ void	Mesh::BufferData()	{
 
 void Mesh::GenerateNormals()
 {
-	if (!normals) {
-		normals = new  Vector3[numVertices];
+	if (!normals)
+	{
+		normals = new Vector3[numVertices];
 	}
-	for (GLuint i = 0; i < numVertices; ++i) {
+	for (GLuint i = 0; i < numVertices; ++i)
+	{
 		normals[i] = Vector3();
 	}
-	if (indices) { // Generate per -vertex  normals
-		for (GLuint i = 0; i < numIndices; i += 3) {
-			unsigned  int a = indices[i];
-			unsigned  int b = indices[i + 1];
-			unsigned  int c = indices[i + 2];
+	if (indices)
+	{ // Generate per -vertex  normals
+		for (GLuint i = 0; i < numIndices; i += 3)
+		{
+			unsigned int a = indices[i];
+			unsigned int b = indices[i + 1];
+			unsigned int c = indices[i + 2];
 
-			Vector3  normal = Vector3::Cross((vertices[b] - vertices[a]), (vertices[c] - vertices[a]));
+			Vector3 normal = Vector3::Cross((vertices[b] - vertices[a]), (vertices[c] - vertices[a]));
 
 			normals[a] += normal;
 			normals[b] += normal;
 			normals[c] += normal;
 		}
 	}
-	else { //It’s just a list of triangles , so  generate  face  normals
-		for (GLuint i = 0; i < numVertices; i += 3) {
-			Vector3 &a = vertices[i];
-			Vector3 &b = vertices[i + 1];
-			Vector3 &c = vertices[i + 2];
+	else
+	{ //It’s just a list of triangles , so  generate  face  normals
+		for (GLuint i = 0; i < numVertices; i += 3)
+		{
+			Vector3& a = vertices[i];
+			Vector3& b = vertices[i + 1];
+			Vector3& c = vertices[i + 2];
 
-			Vector3  normal = Vector3::Cross(b - a, c - a);
+			Vector3 normal = Vector3::Cross(b - a, c - a);
 
 			normals[i] = normal;
 			normals[i + 1] = normal;
@@ -295,7 +323,8 @@ void Mesh::GenerateNormals()
 		}
 	}
 
-	for (GLuint i = 0; i < numVertices; ++i) {
+	for (GLuint i = 0; i < numVertices; ++i)
+	{
 		normals[i].Normalise();
 	}
 }

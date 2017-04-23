@@ -6,19 +6,19 @@
 class FluidSim
 {
 public:
-	FluidSim(float poolSize, int gridWidth, float c, float maxSlope, std::string texture = "water.png");
+	FluidSim(float poolSize, int gridWidth, float c, float maxSlope, string texture = "water.png");
 	~FluidSim();
 
 	void step(float dt);
-	RenderObject getFluidRenderObject() { return fluidRenderObject; };
-	RenderObject getCubeRenderObject() { return cubeRenderObject; };
+	RenderObject getFluidRenderObject() const { return fluidRenderObject; };
+	RenderObject getCubeRenderObject() const { return cubeRenderObject; };
 private:
 	float poolSize_;
 	int gridWidth_;
 	float h_;
 	float c2_;
 	float maxSlope_;
-	
+
 	OpenCLUtil clUtil;
 	cl::Program* program;
 	cl::Kernel kernel;
@@ -39,4 +39,3 @@ private:
 
 	bool flipBuff = true;
 };
-

@@ -12,22 +12,22 @@ FluidMesh::FluidMesh(float gridSize, int verticesPerSide, int textureWidth) : gr
 	textureCoords = new Vector2[numVertices];
 	indices = new GLuint[numIndices];
 	/* Generate vertices */
-	float distanceBetweenPoints = gridSize / verticesPerSide;
-	for (int z = 0; z < verticesPerSide; ++z) {
-		for (int x = 0; x < verticesPerSide; ++x) {
+	auto distanceBetweenPoints = gridSize / verticesPerSide;
+	for (auto z = 0; z < verticesPerSide; ++z) {
+		for (auto x = 0; x < verticesPerSide; ++x) {
 			vertices[z * verticesPerSide + x] = Vector3(x*distanceBetweenPoints, 0.0f, z*distanceBetweenPoints);
 			colours[z * verticesPerSide + x] = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-			textureCoords[z * verticesPerSide + x] = Vector2((x/8.0f) * (verticesPerSide/(float)textureWidth), (z/8.0f) * (verticesPerSide/(float)textureWidth));
+			textureCoords[z * verticesPerSide + x] = Vector2((x/8.0f) * (verticesPerSide/static_cast<float>(textureWidth)), (z/8.0f) * (verticesPerSide/static_cast<float>(textureWidth)));
 		}
 	}
 	/* Generate indices */
 	numIndices = 0;
-	for (int x = 0; x < verticesPerSide - 1; ++x) {
-		for (int z = 0; z < verticesPerSide - 1; ++z) {
-			int a = (x      * (verticesPerSide)) + z;
-			int b = ((x + 1) * (verticesPerSide)) + z;
-			int c = ((x + 1) * (verticesPerSide)) + (z + 1);
-			int d = (x      * (verticesPerSide)) + (z + 1);
+	for (auto x = 0; x < verticesPerSide - 1; ++x) {
+		for (auto z = 0; z < verticesPerSide - 1; ++z) {
+			auto a = (x      * (verticesPerSide)) + z;
+			auto b = ((x + 1) * (verticesPerSide)) + z;
+			auto c = ((x + 1) * (verticesPerSide)) + (z + 1);
+			auto d = (x      * (verticesPerSide)) + (z + 1);
 
 			indices[numIndices++] = c;
 			indices[numIndices++] = b;

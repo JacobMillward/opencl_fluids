@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include "Mouse.h"
+#include "Keyboard.h"
 
 void  Camera::UpdateCamera(float  msec) {
 	pitch -= (Mouse::ButtonHeld(MOUSE_RIGHT) ? Mouse::GetRelativePosition().y : 0);
@@ -38,7 +40,8 @@ void  Camera::UpdateCamera(float  msec) {
 	}
 }
 
-Matrix4  Camera::BuildViewMatrix() {
+Matrix4  Camera::BuildViewMatrix() const
+{
 	return    Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
 		Matrix4::Rotation(-yaw, Vector3(0, 1, 0)) *
 		Matrix4::Translation(-position);

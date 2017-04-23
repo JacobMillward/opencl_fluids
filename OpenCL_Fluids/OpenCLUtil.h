@@ -1,8 +1,6 @@
 #pragma once
 #define CL_USE_DEPRECATED_OPENCL_2_0_APIS
-#include <CL\cl.hpp>
-#include <string>
-#include <Windows.h>
+#include <CL/cl.hpp>
 
 class OpenCLUtil
 {
@@ -25,8 +23,8 @@ public:
 	cl::CommandQueue& getCommandQueue() {
 		return queue_;
 	};
-	cl::Program* createProgram(std::string filePath);
-	cl::BufferGL* createSharedBuffer(GLuint* vbo, size_t size, cl_mem_flags flags);
-	void printDeviceInfo(cl::Device device);
+	cl::Program* createProgram(std::string filePath) const;
+	cl::BufferGL* createSharedBuffer(GLuint* vbo, size_t size, cl_mem_flags flags) const;
+	static void printDeviceInfo(cl::Device device);
 };
 

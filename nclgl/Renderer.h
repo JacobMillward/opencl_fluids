@@ -6,27 +6,28 @@
 
 using std::vector;
 
-class Renderer : public OGLRenderer	{
+class Renderer : public OGLRenderer
+{
 public:
-	Renderer(Window &parent, float fluidSize);
+	Renderer(Window& parent, float fluidSize);
 	~Renderer(void);
 
-	virtual void	RenderScene();
+	void RenderScene() override;
 
-	virtual void	Render(const RenderObject &o);
+	virtual void Render(const RenderObject& o);
 
-	virtual void	UpdateScene(float msec);
+	void UpdateScene(float msec) override;
 
-	void	AddRenderObject(RenderObject &r) {
+	void AddRenderObject(RenderObject& r)
+	{
 		renderObjects.push_back(&r);
 	}
-	
+
 	HDC& getDeviceContext() { return deviceContext; }
 	HGLRC& getRenderContext() { return renderContext; }
 protected:
-	GLuint LoadTexture(string name);
+	static GLuint LoadTexture(string name);
 	vector<RenderObject*> renderObjects;
 	Camera* camera;
 	Light* light;
 };
-
