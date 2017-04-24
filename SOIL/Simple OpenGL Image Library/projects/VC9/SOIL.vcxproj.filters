@@ -7,44 +7,48 @@
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\Kernels">
-      <UniqueIdentifier>{e87968ad-5b30-497e-9fc4-32f21a24dcb0}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="..\..\src\image_DXT.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenCLUtil.cpp">
+    <ClCompile Include="..\..\src\image_helper.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FluidSim.cpp">
+    <ClCompile Include="..\..\src\SOIL.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FluidMesh.cpp">
+    <ClCompile Include="..\..\src\stb_image_aug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Kernels\Height_Field_Fluid_Sim.cl">
-      <Filter>Source Files\Kernels</Filter>
-    </None>
+    <ClInclude Include="..\..\src\image_DXT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\image_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\SOIL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\stb_image_aug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\stbi_DDS_aug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\stbi_DDS_aug_c.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenCLUtil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FluidSim.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FluidMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <None Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

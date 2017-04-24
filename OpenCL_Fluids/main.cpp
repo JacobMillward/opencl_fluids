@@ -1,50 +1,74 @@
 #pragma once
+#include "../nclgl/Renderer.h"
+#include "FluidSim.h"
 #include <iostream>
-#include <cmath>
-#include <vector>
-#include "OpenCLUtil.h"
 
-int main() {
-	float poolSize = 100;
+float fluidSize = 500.0f;
 
-	cl_int gridWidth = 50;
-	cl_float h = poolSize / gridWidth;
-	cl_float c2 = 1; // TODO: Figure out what the hell this value is (?Wave propogation speed?)
+int main()
+{
+	auto w = Window(1280, 720);
+	Renderer r(w, fluidSize);
 
-	/* Lets hardcode the timestep for now until we integrate NCLGL */
-	cl_float dt = 0.01f;
+	FluidSim fluid(fluidSize, fluidSize/2, 0.004f, 15.0f, CL_DEVICE_TYPE_GPU);
+	r.AddRenderObject(fluid.getFluidRenderObject());
+	r.AddRenderObject(fluid.getCubeRenderObject());
+	r.SetProjectionMatrix(Matrix4::Perspective(1, 800, 800.0f / 600.0f, 95.0f));
+	auto cameraPosition = Vector3(45, 25, -50);
+	auto cameraLookAt = Vector3(44, 22, 2);
+	auto timeScale = 8;
+	auto timeWarpEnabled = false;
 
-	/* Set up OpenCL */
-	OpenCLUtil clUtil = OpenCLUtil();
+	double totalExecutionTime = 0;
+	auto framecount = 0;
 
-	clUtil.printDeviceInfo();
+	while (w.UpdateWindow() && ++framecount >0)
+	{
+		auto dt = w.GetTimer()->GetTimedMS();
 
-	cl::Program* program = clUtil.createProgram("Kernels/Height_Field_Fluid_Sim.cl");
+		/* Timescale Controls */
+		if (Keyboard::KeyTriggered(KEY_LEFT))
+		{
+			timeScale = max(1, timeScale / 2);
+			std::cout << timeScale << "x\n";
+		}
+		if (Keyboard::KeyTriggered(KEY_RIGHT))
+		{
+			timeScale *= 2;
+		std::cout << timeScale << "x\n";
+		}
+		if (Keyboard::KeyTriggered(KEY_T))
+		{
+			timeWarpEnabled = !timeWarpEnabled;
+			std::cout << "Timewarp: " << (timeWarpEnabled ? "Enabled " : "Disabled ") << timeScale << "x\n";
+		}
+		/* Step the fluid forward */
+		if (timeWarpEnabled)
+		{
+			fluid.step(dt * (1.0f / timeScale));
+		}
+		else
+		{
+			fluid.step(dt);
+		}
 
-	//Create kernel
-	cl::Kernel kernel(*program, "ColumnSimStep");
+		totalExecutionTime += chrono::duration<double, milli>(fluid.getKernelExecutionTime()).count();
+		//std::cout << chrono::duration<double, milli>(fluid.getKernelExecutionTime()).count() << " ms, " << chrono::duration<double, milli>(fluid.getBufferCopyExecutionTime()).count() << " ms" << endl;
 
-	/* Create OpenCL buffers */
-	cl::Buffer u = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth * gridWidth * sizeof(cl_float));
-	cl::Buffer u2 = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth * gridWidth * sizeof(cl_float));
-	cl::Buffer v = cl::Buffer(clUtil.getContext(), CL_MEM_READ_WRITE, gridWidth * gridWidth * sizeof(cl_float));
+		r.ClearBuffers();
+		r.UpdateScene(dt);
+		r.RenderScene();
+		r.SwapBuffers();
+	}
 
-	// TODO: Initialise u with an interesting function
+	auto averageTime = totalExecutionTime / framecount;
+	std::cout << "Average kernel execution time: " << averageTime << " ms" << std::endl;
 
-	/* Set kernel arguments */
-	kernel.setArg(0, u);
-	kernel.setArg(1, u2);
-	kernel.setArg(2, v);
-	kernel.setArg(3, gridWidth);
-	kernel.setArg(4, h);
-	kernel.setArg(5, c2);
-	kernel.setArg(6, dt);
+	/* Write out to log file */
+	ofstream logFile;
+	logFile.open("KernelExececutionTimes.log", ios::app);
+	logFile << fluidSize << " - " << averageTime << " ms" << std::endl;
+	logFile.close();
 
-	//Run the kernel on the specified ND range
-	cl::NDRange global(gridWidth * gridWidth);
-	cl::NDRange local(1);
-	clUtil.getCommandQueue().enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
-
-	delete program;
 	return 0;
 }
