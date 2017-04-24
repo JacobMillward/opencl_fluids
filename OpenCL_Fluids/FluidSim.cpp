@@ -58,7 +58,7 @@ FluidSim::FluidSim(float poolSize, int gridWidth, float c, float maxSlope, cl_de
 
 	/* Create wave in middle of fluid */
 	auto center = size / 2 + gridWidth_ / 2;
-	host_u[center] = 5;
+	host_u[center] = 15;
 	clUtil.getCommandQueue().enqueueWriteBuffer(clBuff_u, CL_TRUE, 0, size * sizeof(cl_float), host_u);
 }
 
